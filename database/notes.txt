@@ -1,0 +1,53 @@
+Structure des tables:
+
+utilisateurs {
+    id
+    nom
+    prenom
+    date_naissance
+    genre
+    email
+    mot_de_passe
+    est_gold
+    role (CLIENT ou ADMIN)
+}
+
+historique_sante {
+    id
+    #id_utilisateur
+    poids
+    taille
+    date_mesure
+}
+
+objectif {
+    id
+    nom_objectif
+}
+
+regime {
+    id
+    nom
+    pourcent_viande
+    pourcent_poisson
+    pourcent_volaille
+    poids_influence
+    trancheS
+}
+
+activite_sportive {
+    id
+    nom
+    poids_influence
+}
+
+tranche_prix_regime {
+    id
+    #regime
+    duree_jours
+    prix
+}
+
+programme_utilisateur {
+    
+}
