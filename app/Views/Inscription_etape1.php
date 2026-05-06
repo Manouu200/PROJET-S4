@@ -52,7 +52,8 @@
 
                 <div class="form-group">
                     <label for="email">Adresse e-mail</label>
-                    <input type="email" id="email" name="email" value="<?= htmlspecialchars(session()->get('email') ?? '') ?>" required>
+                    <input type="email" id="email" name="email" placeholder="exemple@gmail.com" value="<?= htmlspecialchars(session()->get('email') ?? '') ?>" required>
+                    <small id="email-error" style="color: #dc3545; display: none;" data-ajax="true">Cet email est déjà utilisé</small>
                 </div>
 
                 <div class="form-group password-toggle">

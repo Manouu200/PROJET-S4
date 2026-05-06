@@ -177,3 +177,11 @@ button {
 input[type="number"] {
   width: 120px;
 }
+input.invalid {
+  border-color: #dc3545 !important;
+  background-color: #fff5f5;
+}
+
+input.valid:not(:placeholder-shown) {
+  border-color: #28a745 !important;
+}

@@ -12,6 +12,19 @@ class Inscription extends BaseController
         return view('Inscription_etape1');
     }
 
+    public function nouvelle(): string
+    {
+        // Nettoyer les données de session pour un nouveau départ
+        session()->remove('nom');
+        session()->remove('prenom');
+        session()->remove('date_naissance');
+        session()->remove('genre');
+        session()->remove('email');
+        session()->remove('mot_de_passe');
+
+        return view('Inscription_etape1');
+    }
+
     public function etape2(): string
     {
         // Stocker les données de l'étape 1 en session
@@ -41,6 +54,18 @@ class Inscription extends BaseController
         $mot_de_passe = $this->request->getPost('mot_de_passe');
         $taille = $this->request->getPost('taille');
         $poids = $this->request->getPost('poids');
+
+        // Valider les données de santé
+        $taille = (float) $taille;
+        $poids = (float) $poids;
+
+        if (is_nan($taille) || $taille < 50 || $taille > 250) {
+            return redirect()->back()->with('error', 'La taille doit être entre 50 et 250 cm.');
+        }
+
+        if (is_nan($poids) || $poids < 20 || $poids > 300) {
+            return redirect()->back()->with('error', 'Le poids doit être entre 20 et 300 kg.');
+        }
 
         // Insérer l'utilisateur
         $utilisateurData = [

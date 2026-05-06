@@ -26,7 +26,8 @@
 
                 <div class="form-group">
                     <label for="email">Adresse e-mail</label>
-                    <input type="email" id="email" name="email" placeholder="votre@email.com" required>
+                    <input type="email" id="email" name="email" placeholder="exemple@gmail.com" required>
+                    <small id="email-error" style="color: #dc3545; display: none;" data-ajax="false"></small>
                 </div>
 
                 <div class="form-group password-toggle">
@@ -44,7 +45,7 @@
         <div style="text-align: center; margin-top: 20px;">
             <p style="color: #666;">
                 Vous n'avez pas encore de compte?
-                <a href="<?= base_url('inscription') ?>" style="color: #007bff; text-decoration: none; font-weight: bold;">
+                <a href="<?= base_url('inscription/nouvelle') ?>" style="color: #007bff; text-decoration: none; font-weight: bold;">
                     Inscrivez-vous :)
                 </a>
             </p>

@@ -28,12 +28,14 @@
 
                 <div class="form-group">
                     <label for="taille">Votre taille (en cm)</label>
-                    <input type="number" id="taille" name="taille" step="0.01" required>
+                    <input type="text" id="taille" name="taille" placeholder="Ex: 175" required>
+                    <small style="color: #666;">Entre 50 cm et 250 cm</small>
                 </div>
 
                 <div class="form-group">
                     <label for="poids">Votre poids (en kg)</label>
-                    <input type="number" id="poids" name="poids" step="0.01" required>
+                    <input type="text" id="poids" name="poids" placeholder="Ex: 75" required>
+                    <small style="color: #666;">Entre 20 kg et 300 kg</small>
                 </div>
 
                 <button type="submit" class="btn-success">
