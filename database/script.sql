@@ -24,3 +24,67 @@ CREATE TABLE historique_sante (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
+
+CREATE TABLE objectif (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom_objectif VARCHAR(100)
+);
+
+CREATE TABLE objectifs_utilisateur (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT,
+    id_objectif INT,
+    date_choix DATE,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id),
+    FOREIGN KEY (id_objectif) REFERENCES objectif(id)
+);
+
+CREATE TABLE regime (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100),
+    pourcent_viande INT,
+    pourcent_poisson INT,
+    pourcent_volaille INT,
+    poids_variation DECIMAL(5,2), -- + ou -
+    duree_jours INT
+);
+
+CREATE TABLE regime_prix (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_regime INT,
+    duree_jours INT,
+    prix DECIMAL(10,2),
+    FOREIGN KEY (id_regime) REFERENCES regime(id)
+);
+
+CREATE TABLE activite_sportive (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100),
+    poids_variation DECIMAL(5,2), -- + ou -
+);
+
+-- PS: on ajoutera des lignes a cette table que si le paiement pour le programme est approuve
+CREATE TABLE programme_utilisateur (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT,
+    id_regime INT,
+    id_activite INT,
+    date_decision DATE,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id),
+    FOREIGN KEY (id_regime) REFERENCES regime(id),
+    FOREIGN KEY (id_activite) REFERENCES activite_sportive(id)
+);
+
+CREATE TABLE portefeuille (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT UNIQUE,
+    solde DECIMAL(10,2) DEFAULT 0,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id)
+);
+
+CREATE TABLE code_recharge (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) UNIQUE,
+    montant DECIMAL(10,2),
+    utilise BOOLEAN DEFAULT FALSE
+);
