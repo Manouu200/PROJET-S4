@@ -23,6 +23,15 @@ historique_sante {
 objectif {
     id
     nom_objectif
+    #client (parce qu' un client peut avoir plusieurs objectifs)
+}
+
+-->
+utilisateur_objectif {
+    id
+    id_utilisateur
+    id_objectif
+    date_
 }
 
 regime {
