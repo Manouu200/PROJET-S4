@@ -502,3 +502,103 @@ button:active {
   font-weight: 700;
   pointer-events: none;
 }
+
+/* ─── Compact form variant (réduit la hauteur pour éviter le scroll) ───────────────── */
+.compact-form {
+  max-width: 420px;
+  padding: 18px 16px;
+  border-radius: 12px;
+}
+
+.compact-form .brand-icon {
+  width: 90px;
+  height: 90px;
+  margin-bottom: 6px;
+}
+
+.compact-form .app-brand p {
+  font-size: 0.78em;
+  margin-top: 4px;
+}
+
+.compact-form .progress-info {
+  margin-bottom: 10px;
+  font-size: 0.75em;
+}
+
+.compact-form .progress-wrap {
+  margin-bottom: 12px;
+  height: 6px;
+}
+.compact-form .steps-row {
+  margin-bottom: 12px;
+}
+
+.compact-form legend {
+  font-size: 1em;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+}
+
+.compact-form .form-group {
+  margin-bottom: 10px;
+}
+.compact-form label {
+  font-size: 0.82em;
+  margin-bottom: 6px;
+}
+.compact-form input[type="text"],
+.compact-form input[type="email"],
+.compact-form input[type="password"],
+.compact-form input[type="date"],
+.compact-form input[type="number"] {
+  padding: 8px 10px;
+  font-size: 0.92em;
+}
+
+.compact-form .radio-option {
+  padding: 6px 10px;
+  font-size: 0.85em;
+}
+
+.compact-form .password-toggle .toggle-icon {
+  top: 30px;
+  right: 10px;
+}
+.compact-form .eye-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.compact-form button {
+  padding: 10px 12px;
+  font-size: 0.95em;
+}
+
+/* deux colonnes pour les champs courts (nom / prénom) */
+.compact-row {
+  display: flex;
+  gap: 10px;
+}
+.compact-row .col {
+  flex: 1;
+}
+
+/* essayer de limiter la taille du container pour tenir à l'écran */
+.compact-form.container {
+  max-height: calc(100vh - 32px);
+  overflow: hidden;
+}
+
+@media (max-height: 640px) {
+  .compact-form.container {
+    padding: 12px;
+  }
+  .compact-form .brand-icon {
+    width: 72px;
+    height: 72px;
+  }
+  .compact-form {
+    max-width: 380px;
+  }
+}
