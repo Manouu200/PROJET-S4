@@ -13,7 +13,7 @@
 
         <div class="app-brand">
             <div class="brand-icon"><img src="<?= base_url('assets/NutriPlan.png') ?>" alt="NutriPlan" class="brand-logo"></div>
-            <p>Créez votre profil nutritionnel</p>
+            <p>Créez votre profil </p>
         </div>
 
         <div class="progress-info">Étape 2 sur 2</div>

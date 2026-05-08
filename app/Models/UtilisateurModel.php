@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class Utilisateur extends Model
+class UtilisateurModel extends Model
 {
     protected $table = 'utilisateurs';
     protected $primaryKey = 'id';
@@ -13,4 +13,12 @@ class Utilisateur extends Model
     protected $useSoftDeletes = false;
     protected $allowedFields = ['nom', 'prenom', 'date_naissance', 'genre', 'email', 'mot_de_passe', 'est_gold', 'role'];
     protected $useTimestamps = false;
+
+    public function login($email, $password) {
+        $user = $this->where('email', $email)->first();
+        if ($user && password_verify($password, $user['mot_de_passe'])) {
+            return $user;
+        }
+        return null;
+    }
 }
