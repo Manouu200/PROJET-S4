@@ -1,13 +1,20 @@
 function togglePasswordVisibility(inputId) {
   const input = document.getElementById(inputId);
-  const icon = event.target;
+  const icon = event.target.closest(".toggle-icon");
+  const baseUrl = window.baseUrl || "/";
 
   if (input.type === "password") {
     input.type = "text";
-    icon.textContent = "🙈";
+    icon.innerHTML =
+      '<img src="' +
+      baseUrl +
+      'assets/oeil_fermer.png" alt="Masquer" class="eye-icon">';
   } else {
     input.type = "password";
-    icon.textContent = "👁️";
+    icon.innerHTML =
+      '<img src="' +
+      baseUrl +
+      'assets/oeil_ouvert.png" alt="Afficher" class="eye-icon">';
   }
 }
 
@@ -20,12 +27,10 @@ function validateEmailFormatOnly(emailInput) {
       this.classList.remove("invalid", "valid");
       if (errorMsg) errorMsg.style.display = "none";
     } else if (emailRegex.test(this.value)) {
-      // Format valide
       this.classList.remove("invalid");
       this.classList.add("valid");
       if (errorMsg) errorMsg.style.display = "none";
     } else {
-      // Format invalide
       this.classList.remove("valid");
       this.classList.add("invalid");
       if (errorMsg) {
@@ -45,7 +50,6 @@ function validateEmail(emailInput) {
       this.classList.remove("invalid", "valid");
       if (errorMsg) errorMsg.style.display = "none";
     } else if (emailRegex.test(this.value)) {
-      // Format valide, vérifier si l'email existe en base
       checkEmailExists(this.value, emailInput);
     } else {
       this.classList.remove("valid");
@@ -70,7 +74,6 @@ function checkEmailExists(email, emailInput) {
     .then((data) => {
       const errorMsg = document.getElementById("email-error");
       if (data.exists) {
-        // Email existe, marquer comme invalide
         emailInput.classList.remove("valid");
         emailInput.classList.add("invalid");
         if (errorMsg) {
@@ -78,7 +81,6 @@ function checkEmailExists(email, emailInput) {
           errorMsg.style.display = "block";
         }
       } else {
-        // Email n'existe pas, marquer comme valide
         emailInput.classList.remove("invalid");
         emailInput.classList.add("valid");
         if (errorMsg) errorMsg.style.display = "none";
@@ -106,17 +108,14 @@ function validateNumber(numberInput, min, max) {
   });
 }
 
-// Initialiser la validation au chargement
 document.addEventListener("DOMContentLoaded", function () {
   const emailInputs = document.querySelectorAll('input[type="email"]');
   const emailErrorDiv = document.getElementById("email-error");
 
   emailInputs.forEach((input) => {
-    // Si email-error a data-ajax="true", c'est une page avec vérification AJAX
     if (emailErrorDiv && emailErrorDiv.getAttribute("data-ajax") === "true") {
       validateEmail(input);
     } else {
-      // Sinon, juste validation de format
       validateEmailFormatOnly(input);
     }
   });

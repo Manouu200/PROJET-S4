@@ -1,3 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap");
+
+:root {
+  --bg: #f8f9fa;
+  --white: #ffffff;
+  --blue: #4a90e2;
+  --blue-dark: #2f6fbf;
+  --blue-light: #ebf4ff;
+  --green: #5cb85c;
+  --green-dark: #449944;
+  --orange: #f39c12;
+  --red: #e74c3c;
+  --text: #2c3e50;
+  --text-secondary: #6c757d;
+  --border: #dee2e6;
+  --shadow: 0 4px 24px rgba(74, 144, 226, 0.1);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,56 +25,200 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
-  padding: 20px;
+  font-family: "Nunito", sans-serif;
+  background: linear-gradient(135deg, #ebf4ff 0%, #f8f9fa 60%, #eaf7ea 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+  color: var(--text);
 }
 
+/* ─── Container ─────────────────────────────── */
 .container {
-  max-width: 500px;
+  max-width: 480px;
   margin: 0 auto;
-  background-color: white;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: var(--white);
+  padding: 40px 36px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border-top: 5px solid var(--blue);
+  animation: slideUp 0.45s cubic-bezier(0.22, 0.68, 0, 1.2) both;
 }
 
-.progress-info {
-  margin-bottom: 20px;
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── App Logo / Brand ───────────────────────── */
+.app-brand {
   text-align: center;
-  font-size: 0.9em;
-  color: #666;
+  margin-bottom: 28px;
+}
+
+.app-brand .brand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 180px;
+  background: transparent;
+  border-radius: 16px;
+  font-size: 1.7em;
+  margin-bottom: 10px;
+  box-shadow: none;
+}
+
+.brand-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.app-brand h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.55em;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+
+.app-brand p {
+  color: var(--text-secondary);
+  font-size: 0.85em;
+  margin-top: 3px;
+}
+
+/* ─── Page title (login) ─────────────────────── */
+.page-title {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.page-title h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.6em;
+  color: var(--text);
+}
+
+/* ─── Progress ───────────────────────────────── */
+.progress-info {
+  text-align: center;
+  font-size: 0.82em;
+  color: var(--text-secondary);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.progress-wrap {
+  background: #e9ecef;
+  border-radius: 99px;
+  height: 8px;
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--blue) 0%, var(--green) 100%);
+  transition: width 0.5s ease;
 }
 
 progress {
-  width: 100%;
-  height: 10px;
-  margin-bottom: 15px;
-  border-radius: 5px;
+  display: none; /* replaced by custom progress-wrap */
 }
 
+/* ─── Steps indicator ────────────────────────── */
+.steps-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 28px;
+}
+
+.step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78em;
+  font-weight: 800;
+  border: 2px solid var(--border);
+  background: var(--white);
+  color: var(--text-secondary);
+  transition: all 0.3s;
+}
+
+.step-dot.active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(74, 144, 226, 0.35);
+}
+
+.step-dot.done {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+.step-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  max-width: 60px;
+}
+
+.step-line.done {
+  background: var(--green);
+}
+
+/* ─── Fieldset / Section card ────────────────── */
 fieldset {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 20px;
+  border: none;
+  padding: 0;
 }
 
 legend {
-  padding: 0 10px;
-  color: #333;
+  width: 100%;
+  font-family: "Playfair Display", serif;
+  font-size: 1.15em;
+  color: var(--text);
+  padding: 0;
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--blue-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+legend .legend-icon {
   font-size: 1.1em;
 }
 
+/* ─── Form groups ────────────────────────────── */
 .form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
 
 label {
-  margin-bottom: 5px;
-  color: #333;
-  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.9em;
 }
 
 input[type="text"],
@@ -62,11 +226,17 @@ input[type="email"],
 input[type="password"],
 input[type="date"],
 input[type="number"] {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1em;
-  font-family: Arial, sans-serif;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.97em;
+  font-family: "Nunito", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
 }
 
 input[type="text"]:focus,
@@ -75,113 +245,260 @@ input[type="password"]:focus,
 input[type="date"]:focus,
 input[type="number"]:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  border-color: var(--blue);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.13);
 }
 
-.radio-group {
-  margin-bottom: 15px;
+input::placeholder {
+  color: #b0bec5;
 }
 
-.radio-group p {
-  margin-bottom: 10px;
-  color: #333;
-  font-weight: 500;
+input.invalid {
+  border-color: var(--red) !important;
+  background: #fff8f8;
 }
 
-.radio-option {
-  margin-right: 20px;
-  display: inline-flex;
-  align-items: center;
-}
-
-input[type="radio"] {
-  margin-right: 5px;
-  cursor: pointer;
-}
-
-input[type="radio"] + label {
-  cursor: pointer;
-  margin-bottom: 0;
-  font-weight: normal;
+input.valid:not(:placeholder-shown) {
+  border-color: var(--green) !important;
+  background: #f6fff6;
 }
 
 small {
-  color: #666;
-  font-size: 0.85em;
+  color: var(--text-secondary);
+  font-size: 0.8em;
   margin-top: 5px;
 }
 
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  font-size: 1em;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s;
-  width: 100%;
-  margin-top: 10px;
+/* ─── Radio group ────────────────────────────── */
+.radio-group {
+  margin-bottom: 18px;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-.btn-success {
-  background-color: #28a745;
-  color: white;
-}
-
-.btn-success:hover {
-  background-color: #218838;
-}
-
-.back-link {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.back-link a {
-  color: #666;
-  text-decoration: none;
+.radio-group > p {
+  font-weight: 700;
   font-size: 0.9em;
+  margin-bottom: 10px;
+  color: var(--text);
 }
 
-.back-link a:hover {
-  text-decoration: underline;
+.radio-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
+.radio-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 99px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.radio-option:has(input:checked) {
+  background: var(--blue-light);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.radio-option input[type="radio"] {
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+
+.radio-option label {
+  cursor: pointer;
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: 0.95em;
+}
+
+/* ─── Password toggle ────────────────────────── */
 .password-toggle {
   position: relative;
 }
 
 .password-toggle input {
   width: 100%;
-  padding-right: 35px;
+  padding-right: 42px;
 }
 
 .toggle-icon {
   position: absolute;
-  right: 10px;
-  top: 35px;
+  right: 12px;
+  top: 36px;
   cursor: pointer;
   user-select: none;
+  font-size: 1.05em;
+  opacity: 0.6;
+  transition: opacity 0.2s;
 }
 
-input[type="number"] {
-  width: 120px;
-}
-input.invalid {
-  border-color: #dc3545 !important;
-  background-color: #fff5f5;
+.toggle-icon:hover {
+  opacity: 1;
 }
 
-input.valid:not(:placeholder-shown) {
-  border-color: #28a745 !important;
+.eye-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* ─── Buttons ────────────────────────────────── */
+button {
+  width: 100%;
+  padding: 13px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1em;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.2s,
+    background-color 0.2s;
+  margin-top: 10px;
+  letter-spacing: 0.2px;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--blue) 0%, #6ab3f5 100%);
+  color: white;
+  box-shadow: 0 4px 14px rgba(74, 144, 226, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 100%);
+  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, var(--green) 0%, #7ed17e 100%);
+  color: white;
+  box-shadow: 0 4px 14px rgba(92, 184, 92, 0.3);
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
+  box-shadow: 0 6px 20px rgba(92, 184, 92, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ─── Alert flash ────────────────────────────── */
+.alert-error {
+  background: #fdf2f2;
+  border: 1.5px solid #f5c6cb;
+  color: var(--red);
+  padding: 13px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  font-size: 0.9em;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── Footer links ───────────────────────────── */
+.form-footer {
+  text-align: center;
+  margin-top: 22px;
+}
+
+.form-footer p {
+  color: var(--text-secondary);
+  font-size: 0.88em;
+}
+
+.form-footer a {
+  color: var(--blue);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+
+.form-footer a:hover {
+  color: var(--blue-dark);
+  text-decoration: underline;
+}
+
+/* ─── Back link ──────────────────────────────── */
+.back-link {
+  text-align: center;
+  margin-top: 18px;
+}
+
+.back-link a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.87em;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.2s;
+}
+
+.back-link a:hover {
+  color: var(--blue);
+}
+
+/* ─── Health hint box ────────────────────────── */
+.health-hint {
+  background: linear-gradient(135deg, #eaf7ea 0%, #ebf4ff 100%);
+  border: 1.5px solid #c3e6c3;
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.health-hint .hint-icon {
+  font-size: 1.1em;
+  flex-shrink: 0;
+}
+
+/* ─── Divider ────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 22px 0;
+}
+
+/* ─── Input with unit suffix ─────────────────── */
+.input-unit-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-unit-wrap input {
+  flex: 1;
+  padding-right: 48px;
+}
+
+.input-unit {
+  position: absolute;
+  right: 14px;
+  color: var(--text-secondary);
+  font-size: 0.88em;
+  font-weight: 700;
+  pointer-events: none;
 }

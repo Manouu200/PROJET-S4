@@ -4,81 +4,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription - Étape 1</title>
+    <title>Inscription – Étape 1 – NutriPlan</title>
     <link rel="stylesheet" href="<?= base_url('style.css') ?>">
 </head>
 
 <body>
     <div class="container">
-        <div class="progress-info">
-            Étape 1 sur 2
+
+        <div class="app-brand">
+            <div class="brand-icon"><img src="<?= base_url('assets/NutriPlan.png') ?>" alt="NutriPlan" class="brand-logo"></div>
+            <p>Créez votre profil nutritionnel</p>
         </div>
-        <progress value="50" max="100"></progress>
+
+        <div class="progress-info">Étape 1 sur 2</div>
+        <div class="progress-wrap">
+            <div class="progress-fill" style="width: 50%;"></div>
+        </div>
+
+        <div class="steps-row">
+            <div class="step-dot active">1</div>
+            <div class="step-line"></div>
+            <div class="step-dot">2</div>
+        </div>
 
         <form action="<?= base_url('inscription/etape2') ?>" method="POST">
             <fieldset>
-                <legend><strong>Votre identité</strong></legend>
+                <legend>
+                    <span class="legend-icon"> </span>
+                    <strong>Votre identité</strong>
+                </legend>
 
                 <div class="form-group">
                     <label for="nom">Nom</label>
-                    <input type="text" id="nom" name="nom" placeholder="ex: Dupont" value="<?= htmlspecialchars(session()->get('nom') ?? '') ?>" required>
+                    <input type="text" id="nom" name="nom"
+                        placeholder="ex : Dupont"
+                        value="<?= htmlspecialchars(session()->get('nom') ?? '') ?>"
+                        required>
                 </div>
 
                 <div class="form-group">
                     <label for="prenom">Prénom</label>
-                    <input type="text" id="prenom" name="prenom" placeholder="ex: Jean" value="<?= htmlspecialchars(session()->get('prenom') ?? '') ?>" required>
+                    <input type="text" id="prenom" name="prenom"
+                        placeholder="ex : Jean"
+                        value="<?= htmlspecialchars(session()->get('prenom') ?? '') ?>"
+                        required>
                 </div>
 
                 <div class="form-group">
                     <label for="date_naissance">Date de naissance</label>
-                    <input type="date" id="date_naissance" name="date_naissance" value="<?= htmlspecialchars(session()->get('date_naissance') ?? '') ?>" required>
+                    <input type="date" id="date_naissance" name="date_naissance"
+                        value="<?= htmlspecialchars(session()->get('date_naissance') ?? '') ?>"
+                        required>
                 </div>
 
                 <div class="radio-group">
-                    <p><strong>Genre</strong></p>
-                    <div class="radio-option">
-                        <input type="radio" id="m" name="genre" value="M" <?= (session()->get('genre') === 'M') ? 'checked' : '' ?> required>
-                        <label for="m">Homme</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="f" name="genre" value="F" <?= (session()->get('genre') === 'F') ? 'checked' : '' ?> required>
-                        <label for="f">Femme</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="autre" name="genre" value="AUTRE" <?= (session()->get('genre') === 'AUTRE') ? 'checked' : '' ?> required>
-                        <label for="autre">Autre</label>
+                    <p>Genre</p>
+                    <div class="radio-options">
+                        <label class="radio-option">
+                            <input type="radio" name="genre" value="M"
+                                <?= (session()->get('genre') === 'M') ? 'checked' : '' ?> required>
+                            <span>♂ Homme</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="genre" value="F"
+                                <?= (session()->get('genre') === 'F') ? 'checked' : '' ?>>
+                            <span>♀ Femme</span>
+                        </label>
                     </div>
                 </div>
 
+                <div class="divider"></div>
+
                 <div class="form-group">
                     <label for="email">Adresse e-mail</label>
-                    <input type="email" id="email" name="email" placeholder="exemple@gmail.com" value="<?= htmlspecialchars(session()->get('email') ?? '') ?>" required>
-                    <small id="email-error" style="color: #dc3545; display: none;" data-ajax="true">Cet email est déjà utilisé</small>
+                    <input type="email" id="email" name="email"
+                        placeholder="exemple@gmail.com"
+                        value="<?= htmlspecialchars(session()->get('email') ?? '') ?>"
+                        required>
+                    <small id="email-error" style="color: #E74C3C; display: none;" data-ajax="true">
+                        Cet email est déjà utilisé
+                    </small>
                 </div>
 
                 <div class="form-group password-toggle">
                     <label for="mot_de_passe">Mot de passe</label>
-                    <input type="password" id="mot_de_passe" name="mot_de_passe" value="<?= htmlspecialchars(session()->get('mot_de_passe') ?? '') ?>" required>
-                    <span class="toggle-icon" onclick="togglePasswordVisibility('mot_de_passe')">👁️</span>
-                    <small>Cliquez sur l'icône 👁️ pour vérifier votre saisie.</small>
+                    <input type="password" id="mot_de_passe" name="mot_de_passe"
+                        value="<?= htmlspecialchars(session()->get('mot_de_passe') ?? '') ?>"
+                        required>
+                    <span class="toggle-icon" onclick="togglePasswordVisibility('mot_de_passe')"><img src="<?= base_url('assets/oeil_ouvert.png') ?>" alt="Afficher" class="eye-icon"></span>
+                    <small>Cliquez sur l'icône pour vérifier votre saisie.</small>
                 </div>
 
                 <button type="submit" class="btn-primary">
-                    <strong>Continuer vers ma santé</strong>
+                    Continuer → Mes informations de santé
                 </button>
-
-                <div style="text-align: center; margin-top: 20px;">
-                    <p style="color: #666;">
-                        Vous avez déjà un compte?
-                        <a href="<?= base_url('/') ?>" style="color: #007bff; text-decoration: none; font-weight: bold;">
-                            Connectez vous :)
-                        </a>
-                    </p>
-                </div>
             </fieldset>
         </form>
-    </div>
 
+        <div class="form-footer">
+            <p>Vous avez déjà un compte ?
+                <a href="<?= base_url('/') ?>">Connectez-vous :)</a>
+            </p>
+        </div>
+
+    </div>
+    <script>
+        window.baseUrl = '<?= base_url() ?>';
+    </script>
     <script src="<?= base_url('script.js') ?>"></script>
 </body>
 
