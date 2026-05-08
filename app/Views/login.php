@@ -18,12 +18,12 @@
 
         <?php if (session()->getFlashdata('error')): ?>
             <div class="alert-error">
-                <span>⚠️</span>
+                
                 <?= htmlspecialchars(session()->getFlashdata('error')) ?>
             </div>
         <?php endif; ?>
 
-        <form action="<?= base_url('auth/authenticate') ?>" method="POST">
+        <form action="<?= base_url('authenticate') ?>" method="POST">
             <fieldset>
                 <legend>
                     <span class="legend-icon"> </span>
@@ -33,13 +33,13 @@
                 <div class="form-group">
                     <label for="email">Adresse e-mail</label>
                     <input type="email" id="email" name="email"
-                        placeholder="exemple@gmail.com" required>
+                        placeholder="exemple@gmail.com" value="admin@test.com">
                     <small id="email-error" style="color: #E74C3C; display: none;" data-ajax="false"></small>
                 </div>
 
                 <div class="form-group password-toggle">
                     <label for="mot_de_passe">Mot de passe</label>
-                    <input type="password" id="mot_de_passe" name="mot_de_passe" required>
+                    <input type="password" id="mot_de_passe" name="mot_de_passe" required value="admin1234">
                     <span class="toggle-icon" onclick="togglePasswordVisibility('mot_de_passe')"><img src="<?= base_url('assets/oeil_ouvert.png') ?>" alt="Afficher" class="eye-icon"></span>
                 </div>
 
@@ -51,7 +51,7 @@
 
         <div class="form-footer">
             <p>Vous n'avez pas encore de compte ?
-                <a href="<?= base_url('inscription/nouvelle') ?>">Inscrivez-vous :)</a>
+                <a href="<?= base_url('/inscription/etape1') ?>">Inscrivez-vous :)</a>
             </p>
         </div>
 

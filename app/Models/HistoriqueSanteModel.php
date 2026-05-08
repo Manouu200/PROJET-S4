@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class HistoriqueSante extends Model
+class HistoriqueSanteModel extends Model
 {
     protected $table = 'historique_sante';
     protected $primaryKey = 'id';
@@ -14,3 +14,4 @@ class HistoriqueSante extends Model
     protected $allowedFields = ['id_utilisateur', 'poids', 'taille', 'date_mesure'];
     protected $useTimestamps = false;
 }
+
