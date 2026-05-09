@@ -32,7 +32,7 @@ $routes->group('client', ['filter' => 'auth'], function ($routes) {
 $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('dashboard', 'AdminController::index');
     
-
+    // regimes
     $routes->get('regimes', 'RegimeController::index');
     $routes->get('regimes/create', 'RegimeController::create'); 
     $routes->post('regimes/store', 'RegimeController::store');
@@ -40,5 +40,11 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->post('regimes/update/(:num)', 'RegimeController::update/$1');
     $routes->get('regimes/delete/(:num)', 'RegimeController::delete/$1');
     
-    // Ajoute ici le CRUD pour les Activités Sportives plus tard
+    // sports
+    $routes->get('sports', 'ActiviteSportiveController::index');
+    $routes->get('sports/create', 'ActiviteSportiveController::create');
+    $routes->post('sports/store', 'ActiviteSportiveController::store');
+    $routes->get('sports/edit/(:num)', 'ActiviteSportiveController::edit/$1');
+    $routes->post('sports/update/(:num)', 'ActiviteSportiveController::update/$1');
+    $routes->get('sports/delete/(:num)', 'ActiviteSportiveController::delete/$1');
 });
