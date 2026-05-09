@@ -60,7 +60,7 @@ CREATE TABLE regime_prix (
 CREATE TABLE activite_sportive (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100),
-    poids_variation DECIMAL(5,2), -- + ou -
+    poids_variation DECIMAL(5,2) -- + ou -
 );
 
 -- PS: on ajoutera des lignes a cette table que si le paiement pour le programme est approuve
@@ -77,14 +77,40 @@ CREATE TABLE programme_utilisateur (
 
 CREATE TABLE portefeuille (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    id_utilisateur INT UNIQUE,
-    solde DECIMAL(10,2) DEFAULT 0,
+    id_utilisateur INT NOT NULL UNIQUE,
+    solde DECIMAL(12,2) DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE code_recharge (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) UNIQUE,
-    montant DECIMAL(10,2),
-    utilise BOOLEAN DEFAULT FALSE
+    code VARCHAR(100) NOT NULL UNIQUE,
+    montant DECIMAL(12,2) NOT NULL,
+    est_utilise BOOLEAN DEFAULT FALSE,
+    id_utilisateur INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    used_at TIMESTAMP NULL,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE historique_recharge (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_portefeuille INT NOT NULL,
+    id_code_utilise INT NOT NULL UNIQUE,
+    montant DECIMAL(12,2) NOT NULL,
+    used_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (id_portefeuille) REFERENCES portefeuille(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (id_code_utilise) REFERENCES code_recharge(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
