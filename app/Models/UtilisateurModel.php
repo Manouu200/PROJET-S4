@@ -21,4 +21,8 @@ class UtilisateurModel extends Model
         }
         return null;
     }
+
+    public function getNombresClients(){
+        return $this->where('role', 'CLIENT')->countAllResults();
+    }
 }
