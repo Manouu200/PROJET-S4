@@ -15,6 +15,7 @@ $routes->post('/api/check-email', 'InscriptionController::checkEmail');
 
 //  Groupe Client 
 $routes->group('client', ['filter' => 'auth'], function($routes) {
+    $routes->get('/', 'ClientController::index');
     $routes->get('home', 'ClientController::index');
     
 });
@@ -22,6 +23,5 @@ $routes->group('client', ['filter' => 'auth'], function($routes) {
 //  Groupe Admin 
 $routes->group('admin', ['filter' => 'admin'], function($routes) {
     $routes->get('dashboard', 'AdminController::index');
-    $routes->get('regimes/create', 'RegimeController::create');
   
 });

@@ -73,7 +73,7 @@
         </form>
 
         <div class="back-link">
-            <a href="<?= base_url('inscription') ?>">← Retour à l'étape précédente</a>
+            <a href="<?= base_url('inscription/etape1') ?>">← Retour à l'étape précédente</a>
         </div>
 
     </div>

@@ -60,7 +60,7 @@ CREATE TABLE regime_prix (
 CREATE TABLE activite_sportive (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100),
-    poids_variation DECIMAL(5,2), -- + ou -
+    poids_variation DECIMAL(5,2) -- + ou -
 );
 
 -- PS: on ajoutera des lignes a cette table que si le paiement pour le programme est approuve

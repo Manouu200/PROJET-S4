@@ -18,7 +18,7 @@
 
         <?php if (session()->getFlashdata('error')): ?>
             <div class="alert-error">
-                
+
                 <?= htmlspecialchars(session()->getFlashdata('error')) ?>
             </div>
         <?php endif; ?>
@@ -51,7 +51,7 @@
 
         <div class="form-footer">
             <p>Vous n'avez pas encore de compte ?
-                <a href="<?= base_url('/inscription/etape1') ?>">Inscrivez-vous :)</a>
+                <a href="<?= base_url('/inscription/etape1?from=login') ?>">Inscrivez-vous :)</a>
             </p>
         </div>
 
