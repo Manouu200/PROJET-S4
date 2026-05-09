@@ -29,7 +29,7 @@ class AuthController extends BaseController
             ]);
 
             return (strtolower($user['role']) === 'admin')
-                ? redirect()->to('/admin/dashboard')
+                ? redirect()->to('/admin/regimes/create')
                 : redirect()->to('/client/home');
         }
 

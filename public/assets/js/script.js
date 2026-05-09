@@ -86,9 +86,7 @@ function checkEmailExists(email, emailInput) {
         if (errorMsg) errorMsg.style.display = "none";
       }
     })
-    .catch((error) => {
-      console.error("Erreur lors de la vérification de l'email:", error);
-    });
+    .catch((error) => {});
 }
 
 function validateNumber(numberInput, min, max) {
@@ -122,10 +120,24 @@ function initClientHome() {
 
   function chargerPage(page) {
     fetch(page)
-      .then((response) => response.text())
+      .then((response) => {
+        if (!response.ok) {
+          if (response.status === 403 || response.status === 401) {
+            throw new Error(`Erreur d'authentification (${response.status})`);
+          }
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response.text();
+      })
       .then((data) => {
+        if (!data || data.trim().length === 0) {
+          throw new Error("Réponse vide");
+        }
         mainContent.innerHTML = data;
         attachMenuLinks();
+      })
+      .catch((error) => {
+        mainContent.innerHTML = "";
       });
   }
 
@@ -165,8 +177,13 @@ function initClientHome() {
     }
   });
 
+  // Afficher un message de chargement
+  mainContent.innerHTML =
+    '<div style="padding: 20px; text-align: center; color: #999;">⏳ Chargement...</div>';
+
   attachMenuLinks();
-  chargerPage(baseUrl + "/client/page/accueil");
+  const accueilUrl = baseUrl + "/client/page/accueil";
+  chargerPage(accueilUrl);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
