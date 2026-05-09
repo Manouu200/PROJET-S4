@@ -26,4 +26,8 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('dashboard', 'AdminController::index');
     $routes->get('regimes/create', 'RegimeController::create');
     $routes->post('regimes/store', 'RegimeController::store');
+    $routes->get('regimes', 'RegimeController::index');
+    $routes->get('regimes/(:num)/edit', 'RegimeController::edit/$1');
+    $routes->post('regimes/(:num)/update', 'RegimeController::update/$1');
+    $routes->post('regimes/(:num)/delete', 'RegimeController::delete/$1');
 });
