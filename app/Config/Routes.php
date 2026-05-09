@@ -7,29 +7,20 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', function () {
     return redirect()->to('/login');
 });
-
-// Authentification
 $routes->get('/login', 'AuthController::login');
 $routes->post('/authenticate', 'AuthController::authenticate');
 $routes->get('/logout', 'AuthController::logout');
-
-// Inscription 
-$routes->get('/inscription/etape1', 'InscriptionController::inscription_etape1');
-$routes->post('/inscription/etape2', 'InscriptionController::inscription_etape2');
+$routes->match(['GET', 'POST'], '/inscription/etape1', 'InscriptionController::inscription_etape1');
+$routes->match(['GET', 'POST'], '/inscription/etape2', 'InscriptionController::inscription_etape2');
 $routes->post('/inscription/finaliser', 'InscriptionController::finaliser');
-
-
-$routes->get('/inscription/etape2', 'InscriptionController::inscription_etape1');
-$routes->get('/inscription/finaliser', 'InscriptionController::inscription_etape1');
-
-// API
 $routes->post('/api/check-email', 'InscriptionController::checkEmail');
 
 // Groupe Client 
 $routes->group('client', ['filter' => 'auth'], function ($routes) {
     $routes->get('home', 'ClientController::index');
     $routes->get('page/(:segment)', 'ClientController::page/$1');
-   
+    $routes->get('profil', 'ClientController::edit');
+    $routes->post('profil/update', 'ClientController::update');
 });
 
 // Groupe Admin 

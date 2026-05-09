@@ -1,3 +1,8 @@
+<?php
+
+/** @var float|null $imc */
+?>
+
 <!-- ══════════════════════════════════════════
      Section 1 : Hero — La Promesse
 ══════════════════════════════════════════ -->
@@ -12,20 +17,25 @@
             </p>
         </div>
         <div class="hero-visual">
-            <div class="imc-ring">
+            <div class="imc-ring" data-imc="<?= esc($imc !== null ? number_format((float)$imc, 1, '.', '') : '') ?>">
                 <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="60" cy="60" r="52" fill="none" stroke="#e0eefc" stroke-width="10" />
-                    <circle cx="60" cy="60" r="52" fill="none" stroke="url(#ringGrad)" stroke-width="10"
-                        stroke-dasharray="220" stroke-dashoffset="60" stroke-linecap="round"
-                        transform="rotate(-90 60 60)" />
+                    <circle id="ringProgress" cx="60" cy="60" r="52" fill="none" stroke="url(#ringGrad)" stroke-width="10"
+                        stroke-dasharray="220" stroke-dashoffset="220" stroke-linecap="round" transform="rotate(-90 60 60)" />
                     <defs>
                         <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stop-color="#4a90e2" />
-                            <stop offset="100%" stop-color="#5cb85c" />
+                            <stop offset="20%" stop-color="#4a90e2" />
+                            <stop offset="20%" stop-color="#5cb85c" />
+                            <stop offset="55%" stop-color="#5cb85c" />
+                            <stop offset="55%" stop-color="#f39c12" />
+                            <stop offset="75%" stop-color="#f39c12" />
+                            <stop offset="75%" stop-color="#e74c3c" />
+                            <stop offset="100%" stop-color="#e74c3c" />
                         </linearGradient>
                     </defs>
-                    <text x="60" y="55" text-anchor="middle" font-family="Playfair Display,serif"
-                        font-size="18" fill="#2c3e50" font-weight="700">22.4</text>
+                    <text id="ringImcText" x="60" y="55" text-anchor="middle" font-family="Playfair Display,serif"
+                        font-size="18" fill="#2c3e50" font-weight="700"><?= esc($imc !== null ? number_format((float)$imc, 1, '.', '') : '--') ?></text>
                     <text x="60" y="72" text-anchor="middle" font-family="Nunito,sans-serif"
                         font-size="9" fill="#6c757d" font-weight="600">VOTRE IMC</text>
                 </svg>

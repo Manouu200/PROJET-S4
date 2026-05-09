@@ -65,7 +65,7 @@
                         <img src="<?= base_url('assets/profil.png') ?>" alt="Profil" class="nav-icon"> Profil
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item menu-link" href="<?= base_url('client/page/edit') ?>">
+                        <a class="dropdown-item menu-link" href="<?= base_url('client/profil') ?>">
                             Informations personnelles
                         </a>
                         <a class="dropdown-item menu-link" href="<?= base_url('client/page/programme') ?>">
