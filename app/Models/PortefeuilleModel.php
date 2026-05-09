@@ -6,6 +6,7 @@ use CodeIgniter\Model;
 
 class PortefeuilleModel extends Model
 {
+    // ok
     protected $table            = 'portefeuille';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
