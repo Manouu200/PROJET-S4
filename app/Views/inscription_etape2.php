@@ -32,7 +32,8 @@
             <span>Ces informations nous permettent de calculer votre <strong>IMC</strong> et de vous proposer un régime alimentaire parfaitement adapté à vos objectifs.</span>
         </div>
 
-        <form action="<?= base_url('inscription/finaliser') ?>" method="POST">
+        <form action="<?= base_url('/inscription/finaliser') ?>" method="POST">
+            <?= csrf_field() ?>
             <fieldset>
                 <legend>
                     <span class="legend-icon"> </span>
@@ -40,12 +41,12 @@
                 </legend>
 
                 <!-- Hidden fields from step 1 -->
-                <input type="hidden" name="nom" value="<?= htmlspecialchars(session()->get('nom') ?? '') ?>">
-                <input type="hidden" name="prenom" value="<?= htmlspecialchars(session()->get('prenom') ?? '') ?>">
-                <input type="hidden" name="date_naissance" value="<?= htmlspecialchars(session()->get('date_naissance') ?? '') ?>">
-                <input type="hidden" name="genre" value="<?= htmlspecialchars(session()->get('genre') ?? '') ?>">
-                <input type="hidden" name="email" value="<?= htmlspecialchars(session()->get('email') ?? '') ?>">
-                <input type="hidden" name="mot_de_passe" value="<?= htmlspecialchars(session()->get('mot_de_passe') ?? '') ?>">
+                <input type="hidden" name="nom" value="<?= htmlspecialchars($step1_data['nom'] ?? '') ?>">
+                <input type="hidden" name="prenom" value="<?= htmlspecialchars($step1_data['prenom'] ?? '') ?>">
+                <input type="hidden" name="date_naissance" value="<?= htmlspecialchars($step1_data['date_naissance'] ?? '') ?>">
+                <input type="hidden" name="genre" value="<?= htmlspecialchars($step1_data['genre'] ?? '') ?>">
+                <input type="hidden" name="email" value="<?= htmlspecialchars($step1_data['email'] ?? '') ?>">
+                <input type="hidden" name="mot_de_passe" value="<?= htmlspecialchars($step1_data['mot_de_passe'] ?? '') ?>">
 
                 <div class="form-group">
                     <label for="taille">Votre taille</label>
@@ -73,7 +74,7 @@
         </form>
 
         <div class="back-link">
-            <a href="<?= base_url('inscription/etape1') ?>">← Retour à l'étape précédente</a>
+            <a href="<?= base_url('/inscription/etape1') ?>">← Retour à l'étape précédente</a>
         </div>
 
     </div>

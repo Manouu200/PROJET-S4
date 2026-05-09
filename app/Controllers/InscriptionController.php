@@ -3,15 +3,12 @@
 namespace App\Controllers;
 
 use App\Models\UtilisateurModel;
-use CodeIgniter\Database\Database;
 use App\Models\HistoriqueSanteModel;
 
 class InscriptionController extends BaseController
 {
-
     public function inscription_etape1()
     {
-        // Si on vient de login, nettoyer la session (formulaire vide)
         if ($this->request->getGet('from') === 'login') {
             session()->remove(['nom', 'prenom', 'email', 'genre', 'mot_de_passe', 'date_naissance']);
         }
@@ -20,65 +17,77 @@ class InscriptionController extends BaseController
 
     public function inscription_etape2()
     {
-        $data = $this->request->getPost();
-
-        session()->set($data);
+        $dataStep1 = $this->request->getPost();
+        
+        session()->set($dataStep1);
 
         return view('inscription_etape2');
     }
 
     public function finaliser()
     {
-
         $db = \Config\Database::connect();
         $utilisateurModel = new UtilisateurModel();
         $santeModel = new HistoriqueSanteModel();
 
-        $db->transStart();
+        try {
+            $db->transStart();
 
-        $userdata = [
-            'nom'           => session()->get('nom'),
-            'prenom'        => session()->get('prenom'),
-            'email'         => session()->get('email'),
-            'genre'         => session()->get('genre'),
-            'mot_de_passe'  => password_hash(session()->get('mot_de_passe'), PASSWORD_DEFAULT),
-            'taille'        => $this->request->getPost('taille'),
-            'poids'         => $this->request->getPost('poids'),
-            'role'          => 'client',
-            'porte_monnaie' => 0,
-            'est_gold'      => 0
-        ];
+            $userdata = [
+                'nom'            => session()->get('nom'),
+                'prenom'         => session()->get('prenom'),
+                'email'          => session()->get('email'),
+                'genre'          => session()->get('genre'),
+                'mot_de_passe'   => password_hash(session()->get('mot_de_passe'), PASSWORD_DEFAULT),
+                'date_naissance' => session()->get('date_naissance'),
+                'role'           => 'CLIENT',
+                'est_gold'       => FALSE
+            ];
 
-        $utilisateurModel->insert($userdata);
-        $newUserId = $db->insertID();
+            if (!$utilisateurModel->insert($userdata)) {
+                $err = implode(' | ', $utilisateurModel->errors());
+                throw new \Exception("Erreur Profil : " . $err);
+            }
 
-        $santeData = [
-            'utilisateur_id' => $newUserId,
-            'taille'         => $userdata['taille'],
-            'poids'          => $userdata['poids'],
-            'date_mesure' => date('Y-m-d H:i:s')
-        ];
-        $santeModel->insert($santeData);
+            $newUserId = $db->insertID();
 
-        $db->transComplete();
+            $taille = $this->request->getPost('taille');
+            $poids = $this->request->getPost('poids');
 
-        if ($db->transStatus() === false) {
-            return redirect()->back()->with('error', "Erreur lors de la création du profil.");
+            $santeData = [
+                'id_utilisateur' => $newUserId,
+                'taille'         => (float)$taille ,
+                'poids'          => (float)$poids,
+                'date_mesure'    => date('Y-m-d')
+            ];
+
+            if (!$santeModel->insert($santeData)) {
+                $err = implode(' | ', $santeModel->errors());
+                throw new \Exception("Erreur Santé : " . $err);
+            }
+
+            $db->transComplete();
+
+            if ($db->transStatus() === false) {
+                throw new \Exception("Erreur lors de la transaction SQL finale.");
+            }
+
+            $newUser = $utilisateurModel->find($newUserId);
+
+            session()->remove(['nom', 'prenom', 'email', 'genre', 'mot_de_passe', 'date_naissance']);
+
+            session()->set([
+                'user_id'    => $newUser['id'],
+                'user_role'  => 'client', 
+                'user_nom'   => $newUser['nom'],
+                'isLoggedIn' => true
+            ]);
+
+            return redirect()->to('/client/home');
+
+        } catch (\Exception $e) {
+            $db->transRollback();
+            return redirect()->to('/inscription/etape1')->with('error', $e->getMessage());
         }
-
-        session()->remove(['nom', 'prenom', 'email', 'genre', 'mot_de_passe']);
-        return redirect()->to('/login')->with('success', "Inscription réussie !");
-    }
-
-
-    public function checkEmail()
-    {
-        $email = $this->request->getPost('email');
-        $model = new UtilisateurModel();
-        $user = $model->where('email', $email)->first();
-
-        return $this->response->setJSON([
-            'exists' => ($user !== null)
-        ]);
     }
 }
