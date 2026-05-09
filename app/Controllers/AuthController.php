@@ -28,8 +28,7 @@ class AuthController extends BaseController
                 'isLoggedIn' => true
             ]);
 
-            // Redirection personnalisée
-            return ($user['role'] === 'admin')
+            return (strtolower($user['role']) === 'admin')
                 ? redirect()->to('/admin/dashboard')
                 : redirect()->to('/client/home');
         }
