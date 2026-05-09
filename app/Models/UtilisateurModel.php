@@ -14,7 +14,8 @@ class UtilisateurModel extends Model
     protected $allowedFields = ['nom', 'prenom', 'date_naissance', 'genre', 'email', 'mot_de_passe', 'est_gold', 'role'];
     protected $useTimestamps = false;
 
-    public function login($email, $password) {
+    public function login($email, $password)
+    {
         $user = $this->where('email', $email)->first();
         if ($user && password_verify($password, $user['mot_de_passe'])) {
             return $user;
@@ -22,7 +23,15 @@ class UtilisateurModel extends Model
         return null;
     }
 
-    public function getNombresClients(){
+    public function getNombresClients()
+    {
         return $this->where('role', 'CLIENT')->countAllResults();
+    }
+
+    public function getIdByEmail(string $email): ?int
+    {
+        $user = $this->select('id')->where('email', $email)->first();
+
+        return $user ? (int) $user['id'] : null;
     }
 }

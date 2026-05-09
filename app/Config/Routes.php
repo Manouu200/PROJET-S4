@@ -10,8 +10,8 @@ $routes->get('/', function () {
 $routes->get('/login', 'AuthController::login');
 $routes->post('/authenticate', 'AuthController::authenticate');
 $routes->get('/logout', 'AuthController::logout');
-$routes->get('/inscription/etape1', 'InscriptionController::inscription_etape1');
-$routes->post('/inscription/etape2', 'InscriptionController::inscription_etape2');
+$routes->match(['GET', 'POST'], '/inscription/etape1', 'InscriptionController::inscription_etape1');
+$routes->match(['GET', 'POST'], '/inscription/etape2', 'InscriptionController::inscription_etape2');
 $routes->post('/inscription/finaliser', 'InscriptionController::finaliser');
 $routes->post('/api/check-email', 'InscriptionController::checkEmail');
 
@@ -19,6 +19,8 @@ $routes->post('/api/check-email', 'InscriptionController::checkEmail');
 $routes->group('client', ['filter' => 'auth'], function ($routes) {
     $routes->get('home', 'ClientController::index');
     $routes->get('page/(:segment)', 'ClientController::page/$1');
+    $routes->get('profil', 'ClientController::edit');
+    $routes->post('profil/update', 'ClientController::update');
 });
 
 //  Groupe Admin 

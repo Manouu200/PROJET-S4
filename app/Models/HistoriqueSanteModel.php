@@ -13,5 +13,12 @@ class HistoriqueSanteModel extends Model
     protected $useSoftDeletes = false;
     protected $allowedFields = ['id_utilisateur', 'poids', 'taille', 'date_mesure'];
     protected $useTimestamps = false;
-}
 
+    public function getDerniereMesureByUserId(int $userId): ?array
+    {
+        return $this->where('id_utilisateur', $userId)
+            ->orderBy('date_mesure', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->first();
+    }
+}

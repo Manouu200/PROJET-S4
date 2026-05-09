@@ -135,6 +135,10 @@ function initClientHome() {
         }
         mainContent.innerHTML = data;
         attachMenuLinks();
+        initImcGraph();
+        initImcRing();
+        initProfileWizard();
+        initProfileWizard();
       })
       .catch((error) => {
         mainContent.innerHTML = "";
@@ -186,6 +190,164 @@ function initClientHome() {
   chargerPage(accueilUrl);
 }
 
+function initImcGraph() {
+  const imcCard = document.querySelector(".imc-card");
+  if (!imcCard) {
+    return;
+  }
+
+  const imcValueElement = imcCard.querySelector(".imc-value");
+  const indicator = imcCard.querySelector(".imc-indicator");
+
+  if (!imcValueElement || !indicator) {
+    return;
+  }
+
+  const rawValue = (imcValueElement.textContent || "").trim().replace(",", ".");
+  const imcValue = parseFloat(rawValue);
+
+  if (Number.isNaN(imcValue)) {
+    return;
+  }
+
+  const minImc = 16;
+  const maxImc = 40;
+  const ratio = (imcValue - minImc) / (maxImc - minImc);
+  const percent = Math.max(0, Math.min(100, ratio * 100));
+
+  indicator.style.left = `${percent.toFixed(2)}%`;
+}
+
+function initImcRing() {
+  const ringWrap = document.querySelector(".imc-ring");
+  if (!ringWrap) return;
+
+  const dataImc = ringWrap.getAttribute("data-imc") || "";
+  const ringText = ringWrap.querySelector("#ringImcText");
+  const progress = ringWrap.querySelector("#ringProgress");
+  const grad = ringWrap.querySelector("#ringGrad");
+
+  // Try parse numeric IMC
+  const raw = (dataImc || (ringText ? ringText.textContent : ""))
+    .toString()
+    .trim()
+    .replace(",", ".");
+  const imc = parseFloat(raw);
+  if (Number.isNaN(imc)) return;
+
+  // Compute percent on same scale [16..40]
+  const minImc = 16;
+  const maxImc = 40;
+  const ratio = (imc - minImc) / (maxImc - minImc);
+  const percent = Math.max(0, Math.min(100, ratio * 100));
+
+  // Compute circumference from r attribute
+  if (!progress) return;
+  const r = parseFloat(progress.getAttribute("r") || "52");
+  const circumference = 2 * Math.PI * r;
+
+  progress.style.strokeDasharray = `${circumference}`;
+  // offset to hide the remaining portion
+  progress.style.strokeDashoffset = `${circumference * (1 - percent / 100)}`;
+
+  // Update displayed text
+  if (ringText) {
+    ringText.textContent = imc.toFixed(1);
+  }
+
+  // Ensure gradient exists and zones are already defined in SVG; nothing else to do
+}
+
+function initProfileWizard() {
+  const form = document.querySelector('[data-profile-wizard="true"]');
+  if (!form) {
+    return;
+  }
+
+  const pages = Array.from(form.querySelectorAll("[data-wizard-page]"));
+  const prevButton = form.querySelector("[data-wizard-prev]");
+  const nextButton = form.querySelector("[data-wizard-next]");
+  const saveButton = form.querySelector("[data-wizard-save]");
+  const dots = Array.from(form.querySelectorAll("[data-wizard-dot]"));
+  let currentStep = parseInt(form.dataset.startStep || "1", 10);
+
+  function setStep(step) {
+    currentStep = step;
+    pages.forEach((page) => {
+      const pageStep = parseInt(
+        page.getAttribute("data-wizard-page") || "1",
+        10,
+      );
+      page.hidden = pageStep !== currentStep;
+    });
+
+    dots.forEach((dot) => {
+      const dotStep = parseInt(dot.getAttribute("data-wizard-dot") || "1", 10);
+      dot.classList.toggle("is-active", dotStep === currentStep);
+      dot.classList.toggle("is-done", dotStep < currentStep);
+    });
+
+    if (prevButton) {
+      prevButton.hidden = currentStep === 1;
+    }
+    if (nextButton) {
+      nextButton.hidden = currentStep !== 1;
+    }
+    if (saveButton) {
+      saveButton.hidden = currentStep !== 2;
+    }
+  }
+
+  function validateStep(step) {
+    const page = pages.find(
+      (item) =>
+        parseInt(item.getAttribute("data-wizard-page") || "1", 10) === step,
+    );
+    if (!page) {
+      return true;
+    }
+
+    const fields = Array.from(page.querySelectorAll("input, select, textarea"));
+    for (const field of fields) {
+      if (field.required && !field.checkValidity()) {
+        field.reportValidity();
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  if (prevButton) {
+    prevButton.addEventListener("click", function () {
+      setStep(1);
+    });
+  }
+
+  if (nextButton) {
+    nextButton.addEventListener("click", function () {
+      if (!validateStep(1)) {
+        return;
+      }
+      setStep(2);
+    });
+  }
+
+  form.addEventListener("submit", function (event) {
+    if (currentStep !== 2) {
+      event.preventDefault();
+      setStep(2);
+      return;
+    }
+
+    if (!validateStep(2)) {
+      event.preventDefault();
+    }
+  });
+
+  setStep(currentStep);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const emailInputs = document.querySelectorAll('input[type="email"]');
   const emailErrorDiv = document.getElementById("email-error");
@@ -209,4 +371,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   initClientHome();
+  initImcGraph();
+  initImcRing();
+  initProfileWizard();
 });
