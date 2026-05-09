@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Services\SoldeService;
+
 class ClientController extends BaseController
 {
     public function index()
@@ -11,6 +13,7 @@ class ClientController extends BaseController
         ];
         return view('client/home', $data);
     }
+
 
     public function page(string $page)
     {
@@ -27,6 +30,19 @@ class ClientController extends BaseController
             return $this->response->setStatusCode(404);
         }
 
-        return view($allowedPages[$page]);
+        $data = [];
+
+        switch ($page) {
+            case 'solde':
+                $service = new SoldeService(); 
+                $data['solde'] = $service->getSoldeUtilisateur(session()->get('user_id'));
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        return view($allowedPages[$page], $data);
     }
 }
