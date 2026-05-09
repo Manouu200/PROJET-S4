@@ -23,6 +23,7 @@ class AuthController extends BaseController
         if ($user) {
             session()->set([
                 'user_id'    => $user['id'],
+                'user_email' => $user['email'],
                 'user_role'  => strtolower($user['role']),
                 'user_nom'   => $user['nom'],
                 'isLoggedIn' => true
