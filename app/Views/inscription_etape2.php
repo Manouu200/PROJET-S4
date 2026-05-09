@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription – Étape 2 – NutriPlan</title>
-    <link rel="stylesheet" href="<?= base_url('style.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/style.css') ?>">
 </head>
 
 <body>
@@ -80,7 +80,7 @@
     <script>
         window.baseUrl = '<?= base_url() ?>';
     </script>
-    <script src="<?= base_url('script.js') ?>"></script>
+    <script src="<?= base_url('assets/js/script.js') ?>"></script>
 </body>
 
 </html>
