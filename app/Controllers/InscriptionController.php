@@ -11,6 +11,10 @@ class InscriptionController extends BaseController
 
     public function inscription_etape1()
     {
+        // Si on vient de login, nettoyer la session (formulaire vide)
+        if ($this->request->getGet('from') === 'login') {
+            session()->remove(['nom', 'prenom', 'email', 'genre', 'mot_de_passe', 'date_naissance']);
+        }
         return view('inscription_etape1');
     }
 
