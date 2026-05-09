@@ -108,6 +108,67 @@ function validateNumber(numberInput, min, max) {
   });
 }
 
+function getBaseUrl() {
+  return document.body?.dataset?.baseUrl || window.baseUrl || "/";
+}
+
+function initClientHome() {
+  const mainContent = document.getElementById("main-content");
+  if (!mainContent) {
+    return;
+  }
+
+  const baseUrl = getBaseUrl().replace(/\/$/, "");
+
+  function chargerPage(page) {
+    fetch(page)
+      .then((response) => response.text())
+      .then((data) => {
+        mainContent.innerHTML = data;
+        attachMenuLinks();
+      });
+  }
+
+  function attachMenuLinks() {
+    document.querySelectorAll(".menu-link").forEach((link) => {
+      link.onclick = function (e) {
+        const href = this.getAttribute("href") || "";
+
+        if (href.includes("/logout")) {
+          window.location.href = href;
+          return;
+        }
+
+        if (!this.classList.contains("dropdown-toggle")) {
+          e.preventDefault();
+          chargerPage(this.getAttribute("href"));
+        }
+      };
+    });
+  }
+
+  const dropdownToggle = document.querySelector(".dropdown-toggle");
+  if (dropdownToggle && !dropdownToggle.dataset.bound) {
+    dropdownToggle.dataset.bound = "true";
+    dropdownToggle.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const menu = this.nextElementSibling;
+      menu.classList.toggle("show");
+    });
+  }
+
+  document.addEventListener("click", function (e) {
+    const menu = document.querySelector(".dropdown-menu");
+    if (!e.target.closest(".dropdown") && menu) {
+      menu.classList.remove("show");
+    }
+  });
+
+  attachMenuLinks();
+  chargerPage(baseUrl + "/client/page/accueil");
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const emailInputs = document.querySelectorAll('input[type="email"]');
   const emailErrorDiv = document.getElementById("email-error");
@@ -129,4 +190,6 @@ document.addEventListener("DOMContentLoaded", function () {
   if (poidsInput) {
     validateNumber(poidsInput, 20, 300);
   }
+
+  initClientHome();
 });

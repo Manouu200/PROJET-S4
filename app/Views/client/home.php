@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="<?= base_url('style.css') ?>">
 </head>
 
-<body>
+<body data-base-url="<?= base_url() ?>">
 
     <!-- ── NAVBAR ───────────────────────────────── -->
     <nav class="navbar navbar-expand-lg navbar-light">
@@ -42,14 +42,14 @@
 
                 <!-- HOME -->
                 <li class="nav-item active">
-                    <a class="nav-link menu-link" href="pages/accueil.php">
+                    <a class="nav-link menu-link" href="<?= base_url('client/page/accueil') ?>">
                         Accueil
                     </a>
                 </li>
 
                 <!-- REGIMES -->
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="pages/regimes.php">
+                    <a class="nav-link menu-link" href="<?= base_url('client/page/regimes') ?>">
                         Régimes
                     </a>
                 </li>
@@ -65,18 +65,21 @@
                         <img src="<?= base_url('assets/profil.png') ?>" alt="Profil" class="nav-icon"> Profil
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item menu-link" href="pages/edit.php">
+                        <a class="dropdown-item menu-link" href="<?= base_url('client/page/edit') ?>">
                             Informations personnelles
                         </a>
-                        <a class="dropdown-item menu-link" href="pages/another.php">
+                        <a class="dropdown-item menu-link" href="<?= base_url('client/page/programme') ?>">
                             Programme
                         </a>
-                        <a class="dropdown-item menu-link" href="pages/solde.php">
+                        <a class="dropdown-item menu-link" href="<?= base_url('client/page/solde') ?>">
                             Solde
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item menu-link gold-link" href="pages/gold.php">
+                        <a class="dropdown-item menu-link gold-link" href="<?= base_url('client/page/gold') ?>">
                             ⭐ Passez à GOLD
+                        </a>
+                        <a class="dropdown-item menu-link " href="<?= base_url('logout') ?>">
+                            <img src="<?= base_url('assets/se-deconnecter.png') ?>" alt="Profil" class="nav-icon"> Se déconnecter
                         </a>
                     </div>
                 </li>
@@ -92,60 +95,18 @@
             <div id="main-content"></div>
         </div>
     </div>
+    <!-- ══════════════════════════════════════════
+     Section 5 : Footer
+══════════════════════════════════════════ -->
 
+    <footer class="fixed-bottom bg-light text-center p-3">
+        © 2026 NutriPlan — Tous droits réservés · contact@nutriplan.fr
+    </footer>
     <!-- ── JS ───────────────────────────────────── -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script>
-        // Charger une page dans le main
-        function chargerPage(page) {
-            fetch(page)
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById("main-content").innerHTML = data;
-                    // Ré-attacher les liens après chargement dynamique
-                    attachMenuLinks();
-                });
-        }
-
-        // Attacher les clics sur tous les .menu-link présents dans la page
-        function attachMenuLinks() {
-            document.querySelectorAll(".menu-link").forEach(link => {
-                link.addEventListener("click", function(e) {
-                    // Vérifier que ce n'est pas un dropdown toggle
-                    if (!this.classList.contains("dropdown-toggle")) {
-                        e.preventDefault();
-                        chargerPage(this.getAttribute("href"));
-                    }
-                });
-            });
-        }
-
-        // Page par défaut
-        chargerPage("pages/accueil.php");
-
-        // Liens du menu fixe
-        attachMenuLinks();
-
-        // Gérer le dropdown manuellement
-        document.querySelector('.dropdown-toggle')?.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const menu = this.nextElementSibling;
-            menu.classList.toggle('show');
-        });
-
-        // Fermer le dropdown quand on clique ailleurs
-        document.addEventListener('click', function(e) {
-            const menu = document.querySelector('.dropdown-menu');
-            const toggle = document.querySelector('.dropdown-toggle');
-            if (!e.target.closest('.dropdown') && menu) {
-                menu.classList.remove('show');
-            }
-        });
-    </script>
+    <script src="<?= base_url('script.js') ?>"></script>
 
 </body>
 

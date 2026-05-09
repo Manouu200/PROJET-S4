@@ -1,5 +1,3 @@
-<!-- pages/accueil.php -->
-
 <!-- ══════════════════════════════════════════
      Section 1 : Hero — La Promesse
 ══════════════════════════════════════════ -->
@@ -185,11 +183,3 @@
 
     </div>
 </section>
-
-<!-- ══════════════════════════════════════════
-     Section 5 : Footer
-══════════════════════════════════════════ -->
-
-<footer class="fixed-bottom bg-light text-center p-3">
-    © 2026 NutriPlan — Tous droits réservés · contact@nutriplan.fr
-</footer>

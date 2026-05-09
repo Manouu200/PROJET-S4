@@ -58,6 +58,30 @@ body {
   padding: 10px 24px;
 }
 
+/* Ensure brand and toggler align horizontally on small screens */
+.navbar {
+  align-items: center;
+}
+
+.navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar-toggler {
+  margin-left: auto;
+  width: 44px;
+  height: 44px;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.navbar-toggler .navbar-toggler-icon {
+  width: 24px;
+  height: 24px;
+}
+
 .nutriplan-brand {
   display: flex;
   align-items: center;
@@ -1104,6 +1128,17 @@ button:active {
 
   .navbar-nav {
     flex-direction: column !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .brand-logo-img {
+    height: 40px;
+  }
+  .navbar-toggler {
+    width: 40px;
+    height: 40px;
+    padding: 6px;
   }
 }
 

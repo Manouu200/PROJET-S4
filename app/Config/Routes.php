@@ -1,9 +1,12 @@
 <?php
+
 use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
 
-$routes->get('/', function() { return redirect()->to('/login'); });
+$routes->get('/', function () {
+    return redirect()->to('/login');
+});
 $routes->get('/login', 'AuthController::login');
 $routes->post('/authenticate', 'AuthController::authenticate');
 $routes->get('/logout', 'AuthController::logout');
@@ -14,13 +17,12 @@ $routes->post('/api/check-email', 'InscriptionController::checkEmail');
 
 
 //  Groupe Client 
-$routes->group('client', ['filter' => 'auth'], function($routes) {
+$routes->group('client', ['filter' => 'auth'], function ($routes) {
     $routes->get('home', 'ClientController::index');
-    
+    $routes->get('page/(:segment)', 'ClientController::page/$1');
 });
 
 //  Groupe Admin 
-$routes->group('admin', ['filter' => 'admin'], function($routes) {
+$routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('dashboard', 'AdminController::index');
-  
 });
