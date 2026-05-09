@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class RegimeModel extends Model
 {
-    protected $table = 'regimes';
+    protected $table = 'regime';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
 

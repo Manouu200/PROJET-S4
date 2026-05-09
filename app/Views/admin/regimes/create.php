@@ -9,6 +9,12 @@
         <p class="subtitle">Configurez la composition nutritionnelle et les tarifs .</p>
     </div>
 
+    <?php if (session()->has('error')): ?>
+        <div style="background-color: #ff7675; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <strong>⚠️ Erreur:</strong> <?= session('error') ?>
+        </div>
+    <?php endif; ?>
+
     <form action="<?= base_url('admin/regimes/store') ?>" method="POST" class="pastel-form">
         <div class="main-form-grid">
             
