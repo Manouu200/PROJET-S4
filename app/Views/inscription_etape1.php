@@ -14,6 +14,11 @@
         <div class="app-brand">
             <div class="brand-icon"><img src="<?= base_url('assets/NutriPlan.png') ?>" alt="NutriPlan" class="brand-logo"></div>
             <p>Créez votre profil nutritionnel</p>
+            <?php if (session()->getFlashdata('error')): ?>
+                <div style="background: #ff7675; color: white; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                    ⚠️ <?= session()->getFlashdata('error') ?>
+                </div>
+            <?php endif; ?>
         </div>
 
         <div class="progress-info">Étape 1 sur 2</div>
@@ -27,7 +32,8 @@
             <div class="step-dot">2</div>
         </div>
 
-        <form action="<?= base_url('inscription/etape2') ?>" method="POST">
+        <form action="<?= base_url('/inscription/etape2') ?>" method="POST">
+            <?= csrf_field() ?>
             <fieldset>
                 <legend>
                     <span class="legend-icon"> </span>

@@ -1,0 +1,1 @@
+__ci_last_regenerate|i:1778334734;_ci_previous_url|s:40:"http://localhost:8080/inscription/etape2";nom|s:4:"Test";prenom|s:11:"inscrpition";date_naissance|s:10:"2007-02-14";genre|s:1:"M";email|s:21:"inscription@gmail.com";mot_de_passe|s:4:"1234";error|s:38:"Erreur lors de la création du profil.";__ci_vars|a:1:{s:5:"error";s:3:"new";}
