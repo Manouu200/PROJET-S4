@@ -2,17 +2,17 @@
 
 <h2>$<span id="solde-amount"><?php echo(esc($solde)); ?></span></h2>
 <?php if (session()->getFlashdata('error')): ?>
-    <pre>
+    <div class="alert alert-danger" role="alert">
         <?php $error = session()->getFlashdata('error'); print_r($error); ?>
-    </pre>
+    </div>
 <?php endif; ?>
 <?php if (session()->getFlashdata('success')): ?>
-    <pre>
+    <div class="alert alert-success" role="alert">
         <?php $success = session()->getFlashdata('success'); print_r($success); ?>
-    </pre>
+    </div>
 <?php endif; ?>
 
-<div id="recharge-messages"></div>
+<div id="recharge-messages" class="mt-2"></div>
 
 <form id="recharge-form" action="<?= site_url('client/solde/recharger') ?>" method="post">
     <?= csrf_field() ?>

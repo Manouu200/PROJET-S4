@@ -1,3 +1,8 @@
+/* === fonctions utilitaire */
+const attendre = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+
+
 function togglePasswordVisibility(inputId) {
   const input = document.getElementById(inputId);
   const icon = event.target.closest(".toggle-icon");
@@ -160,54 +165,77 @@ function initClientHome() {
     });
   }
 
-  function attachRechargeForm() {
+  async function attachRechargeForm() {
     const form = document.getElementById("recharge-form");
     if (!form || form.dataset.bound === "true") {
       return;
     }
 
     form.dataset.bound = "true";
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const messages = document.getElementById("recharge-messages");
+      const submitButton = form.querySelector("button[type=\"submit\"]");
+      const startedAt = Date.now();
+
       if (messages) {
-        messages.innerHTML = "";
+        messages.innerHTML =
+          '<div class="alert alert-info" role="alert">Traitement en cours...</div>';
+      }
+      if (submitButton) {
+        submitButton.disabled = true;
       }
 
-      fetch(form.action, {
-        method: "POST",
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
-        body: new FormData(form),
-      })
-        .then((response) =>
-          response
-            .json()
-            .then((data) => ({ ok: response.ok, data }))
-        )
-        .then(({ ok, data }) => {
-          if (!ok) {
-            throw new Error(data?.message || "Erreur lors de la recharge");
-          }
-
-          const soldeEl = document.getElementById("solde-amount");
-          if (soldeEl && typeof data.solde !== "undefined") {
-            soldeEl.textContent = data.solde;
-          }
-
-          if (messages) {
-            messages.innerHTML = "<pre>" + data.message + "</pre>";
-          }
-
-          form.reset();
-        })
-        .catch((error) => {
-          if (messages) {
-            messages.innerHTML = "<pre>" + error.message + "</pre>";
-          }
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          body: new FormData(form),
         });
+
+        const data = await response.json();
+        const elapsed = Date.now() - startedAt;
+        if (elapsed < 400) {
+          await attendre(400 - elapsed);
+        }
+
+        if (!response.ok) {
+          throw new Error(data?.message || "Erreur lors de la recharge");
+        }
+
+        const soldeEl = document.getElementById("solde-amount");
+        if (soldeEl && typeof data.solde !== "undefined") {
+          soldeEl.textContent = data.solde;
+        }
+
+        if (messages) {
+          messages.innerHTML =
+            '<div class="alert alert-success" role="alert">' +
+            data.message +
+            "</div>";
+        }
+
+        form.reset();
+      } catch (error) {
+        const elapsed = Date.now() - startedAt;
+        if (elapsed < 400) {
+          await attendre(400 - elapsed);
+        }
+
+        if (messages) {
+          messages.innerHTML =
+            '<div class="alert alert-danger" role="alert">' +
+            error.message +
+            "</div>";
+        }
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+        }
+      }
     });
   }
 

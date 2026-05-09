@@ -23,7 +23,8 @@ class SoldeController extends BaseController
 		$service = new SoldeService();
 		$result = $service->rechargerSolde($codeRecharge, (int) $userId);
 
-		if (! $result['success']) {
+        $rechargeValidee = $result['success'];
+		if (!$rechargeValidee) {
 			if ($this->request->isAJAX()) {
 				return $this->response
 					->setStatusCode(400)
