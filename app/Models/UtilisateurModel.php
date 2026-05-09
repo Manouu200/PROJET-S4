@@ -11,7 +11,7 @@ class UtilisateurModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['nom', 'prenom', 'date_naissance', 'genre', 'email', 'mot_de_passe', 'est_gold', 'role'];
+    protected $allowedFields = ['nom', 'prenom', 'date_naissance', 'genre', 'email', 'mot_de_passe', 'est_gold', 'role', 'porte_monnaie'];
     protected $useTimestamps = false;
 
     public function login($email, $password)
