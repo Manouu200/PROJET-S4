@@ -1,5 +1,17 @@
+/* ════════════════════════════════════════════════════════
+   css/style.css — NutriPlan
+   Contient :
+     1. Variables & Reset
+     2. Body & Layout global
+     3. Navbar
+     4. Main content
+     5. Components (container, forms, buttons, alerts…)
+     6. Page Accueil (hero, steps, benefits, stats, footer)
+   ════════════════════════════════════════════════════════ */
+
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap");
 
+/* ── 1. Variables & Reset ─────────────────────────────── */
 :root {
   --bg: #f8f9fa;
   --white: #ffffff;
@@ -24,15 +36,152 @@
   box-sizing: border-box;
 }
 
+/* ── 2. Body & Layout global ──────────────────────────── */
 body {
   font-family: "Nunito", sans-serif;
   background: linear-gradient(135deg, #ebf4ff 0%, #f8f9fa 60%, #eaf7ea 100%);
   min-height: 100vh;
-  padding: 40px 20px;
   color: var(--text);
 }
 
-/* ─── Container ─────────────────────────────── */
+/* ── 3. Navbar ────────────────────────────────────────── */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 16px rgba(74, 144, 226, 0.08);
+  padding: 10px 24px;
+}
+
+/* Ensure brand and toggler align horizontally on small screens */
+.navbar {
+  align-items: center;
+}
+
+.navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar-toggler {
+  margin-left: auto;
+  width: 44px;
+  height: 44px;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.navbar-toggler .navbar-toggler-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.nutriplan-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none !important;
+}
+
+.brand-emoji {
+  font-size: 1.4em;
+}
+
+.brand-logo-img {
+  height: 60px;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.brand-label {
+  font-family: "Playfair Display", serif;
+  font-size: 1.2em;
+  color: var(--text) !important;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.navbar .nav-link {
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 0.9em;
+  color: var(--text-secondary) !important;
+  padding: 6px 14px !important;
+  border-radius: 99px;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-item.active .nav-link {
+  background: var(--blue-light);
+  color: var(--blue) !important;
+}
+
+.nav-icon {
+  height: 20px;
+  width: 20px;
+  vertical-align: middle;
+  margin-right: 4px;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  padding: 6px 0;
+  font-family: "Nunito", sans-serif;
+  z-index: 1001;
+  min-width: 200px;
+}
+
+.dropdown-item {
+  font-size: 0.88em;
+  font-weight: 600;
+  color: var(--text);
+  padding: 8px 18px;
+  transition: background 0.15s;
+}
+
+.dropdown-item:hover {
+  background: var(--blue-light);
+  color: var(--blue);
+}
+
+.gold-link {
+  color: var(--orange) !important;
+  font-weight: 800 !important;
+}
+.gold-link:hover {
+  background: #fef6e8 !important;
+  color: #b07d0a !important;
+}
+
+/* ── 4. Main content ──────────────────────────────────── */
+.main-wrapper {
+  padding: 0;
+}
+
+.main-inner {
+  margin-top: 70px;
+  min-height: calc(100vh - 70px);
+  padding: 24px 20px 40px;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── 5. Components ────────────────────────────────────── */
+
 .container {
   max-width: 480px;
   margin: 0 auto;
@@ -55,7 +204,6 @@ body {
   }
 }
 
-/* ─── App Logo / Brand ───────────────────────── */
 .app-brand {
   text-align: center;
   margin-bottom: 28px;
@@ -86,26 +234,22 @@ body {
   color: var(--text);
   letter-spacing: -0.5px;
 }
-
 .app-brand p {
   color: var(--text-secondary);
   font-size: 0.85em;
   margin-top: 3px;
 }
 
-/* ─── Page title (login) ─────────────────────── */
 .page-title {
   text-align: center;
   margin-bottom: 28px;
 }
-
 .page-title h1 {
   font-family: "Playfair Display", serif;
   font-size: 1.6em;
   color: var(--text);
 }
 
-/* ─── Progress ───────────────────────────────── */
 .progress-info {
   text-align: center;
   font-size: 0.82em;
@@ -132,10 +276,9 @@ body {
 }
 
 progress {
-  display: none; /* replaced by custom progress-wrap */
+  display: none;
 }
 
-/* ─── Steps indicator ────────────────────────── */
 .steps-row {
   display: flex;
   align-items: center;
@@ -165,25 +308,21 @@ progress {
   color: #fff;
   box-shadow: 0 2px 10px rgba(74, 144, 226, 0.35);
 }
-
 .step-dot.done {
   background: var(--green);
   border-color: var(--green);
   color: #fff;
 }
-
 .step-line {
   flex: 1;
   height: 2px;
   background: var(--border);
   max-width: 60px;
 }
-
 .step-line.done {
   background: var(--green);
 }
 
-/* ─── Fieldset / Section card ────────────────── */
 fieldset {
   border: none;
   padding: 0;
@@ -207,13 +346,11 @@ legend .legend-icon {
   font-size: 1.1em;
 }
 
-/* ─── Form groups ────────────────────────────── */
 .form-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 18px;
 }
-
 label {
   margin-bottom: 6px;
   color: var(--text);
@@ -253,12 +390,10 @@ input[type="number"]:focus {
 input::placeholder {
   color: #b0bec5;
 }
-
 input.invalid {
   border-color: var(--red) !important;
   background: #fff8f8;
 }
-
 input.valid:not(:placeholder-shown) {
   border-color: var(--green) !important;
   background: #f6fff6;
@@ -270,18 +405,15 @@ small {
   margin-top: 5px;
 }
 
-/* ─── Radio group ────────────────────────────── */
 .radio-group {
   margin-bottom: 18px;
 }
-
 .radio-group > p {
   font-weight: 700;
   font-size: 0.9em;
   margin-bottom: 10px;
   color: var(--text);
 }
-
 .radio-options {
   display: flex;
   gap: 10px;
@@ -307,12 +439,10 @@ small {
   border-color: var(--blue);
   color: var(--blue);
 }
-
 .radio-option input[type="radio"] {
   accent-color: var(--blue);
   cursor: pointer;
 }
-
 .radio-option label {
   cursor: pointer;
   margin-bottom: 0;
@@ -320,16 +450,13 @@ small {
   font-size: 0.95em;
 }
 
-/* ─── Password toggle ────────────────────────── */
 .password-toggle {
   position: relative;
 }
-
 .password-toggle input {
   width: 100%;
   padding-right: 42px;
 }
-
 .toggle-icon {
   position: absolute;
   right: 12px;
@@ -340,18 +467,15 @@ small {
   opacity: 0.6;
   transition: opacity 0.2s;
 }
-
 .toggle-icon:hover {
   opacity: 1;
 }
-
 .eye-icon {
   width: 20px;
   height: 20px;
   object-fit: contain;
 }
 
-/* ─── Buttons ────────────────────────────────── */
 button {
   width: 100%;
   padding: 13px 20px;
@@ -397,7 +521,6 @@ button:active {
   transform: translateY(-1px);
 }
 
-/* ─── Alert flash ────────────────────────────── */
 .alert-error {
   background: #fdf2f2;
   border: 1.5px solid #f5c6cb;
@@ -412,35 +535,29 @@ button:active {
   gap: 8px;
 }
 
-/* ─── Footer links ───────────────────────────── */
 .form-footer {
   text-align: center;
   margin-top: 22px;
 }
-
 .form-footer p {
   color: var(--text-secondary);
   font-size: 0.88em;
 }
-
 .form-footer a {
   color: var(--blue);
   text-decoration: none;
   font-weight: 700;
   transition: color 0.2s;
 }
-
 .form-footer a:hover {
   color: var(--blue-dark);
   text-decoration: underline;
 }
 
-/* ─── Back link ──────────────────────────────── */
 .back-link {
   text-align: center;
   margin-top: 18px;
 }
-
 .back-link a {
   color: var(--text-secondary);
   text-decoration: none;
@@ -451,12 +568,10 @@ button:active {
   gap: 5px;
   transition: color 0.2s;
 }
-
 .back-link a:hover {
   color: var(--blue);
 }
 
-/* ─── Health hint box ────────────────────────── */
 .health-hint {
   background: linear-gradient(135deg, #eaf7ea 0%, #ebf4ff 100%);
   border: 1.5px solid #c3e6c3;
@@ -475,25 +590,21 @@ button:active {
   flex-shrink: 0;
 }
 
-/* ─── Divider ────────────────────────────────── */
 .divider {
   height: 1px;
   background: var(--border);
   margin: 22px 0;
 }
 
-/* ─── Input with unit suffix ─────────────────── */
 .input-unit-wrap {
   position: relative;
   display: flex;
   align-items: center;
 }
-
 .input-unit-wrap input {
   flex: 1;
   padding-right: 48px;
 }
-
 .input-unit {
   position: absolute;
   right: 14px;
@@ -503,29 +614,24 @@ button:active {
   pointer-events: none;
 }
 
-/* ─── Compact form variant (réduit la hauteur pour éviter le scroll) ───────────────── */
 .compact-form {
   max-width: 420px;
   padding: 18px 16px;
   border-radius: 12px;
 }
-
 .compact-form .brand-icon {
   width: 90px;
   height: 90px;
   margin-bottom: 6px;
 }
-
 .compact-form .app-brand p {
   font-size: 0.78em;
   margin-top: 4px;
 }
-
 .compact-form .progress-info {
   margin-bottom: 10px;
   font-size: 0.75em;
 }
-
 .compact-form .progress-wrap {
   margin-bottom: 12px;
   height: 6px;
@@ -533,13 +639,11 @@ button:active {
 .compact-form .steps-row {
   margin-bottom: 12px;
 }
-
 .compact-form legend {
   font-size: 1em;
   margin-bottom: 12px;
   padding-bottom: 8px;
 }
-
 .compact-form .form-group {
   margin-bottom: 10px;
 }
@@ -555,12 +659,10 @@ button:active {
   padding: 8px 10px;
   font-size: 0.92em;
 }
-
 .compact-form .radio-option {
   padding: 6px 10px;
   font-size: 0.85em;
 }
-
 .compact-form .password-toggle .toggle-icon {
   top: 30px;
   right: 10px;
@@ -569,13 +671,10 @@ button:active {
   width: 18px;
   height: 18px;
 }
-
 .compact-form button {
   padding: 10px 12px;
   font-size: 0.95em;
 }
-
-/* deux colonnes pour les champs courts (nom / prénom) */
 .compact-row {
   display: flex;
   gap: 10px;
@@ -583,8 +682,6 @@ button:active {
 .compact-row .col {
   flex: 1;
 }
-
-/* essayer de limiter la taille du container pour tenir à l'écran */
 .compact-form.container {
   max-height: calc(100vh - 32px);
   overflow: hidden;
@@ -600,5 +697,476 @@ button:active {
   }
   .compact-form {
     max-width: 380px;
+  }
+}
+
+.page-box {
+  background: var(--white);
+  padding: 30px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* ── 6. Page Accueil ──────────────────────────────────── */
+
+.hero-section {
+  position: relative;
+  background: linear-gradient(135deg, #eaf7ea 0%, #ebf4ff 60%, #f8f9fa 100%);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 48px 40px 56px;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: var(--blue-light);
+  color: var(--blue);
+  font-size: 0.75em;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 99px;
+  border: 1px solid #c3d9f7;
+  margin-bottom: 14px;
+}
+
+.hero-title {
+  font-family: "Playfair Display", serif;
+  font-size: 2em;
+  color: var(--text);
+  line-height: 1.25;
+  margin-bottom: 14px;
+  max-width: 380px;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--blue);
+}
+
+.hero-sub {
+  color: var(--text-secondary);
+  font-size: 0.95em;
+  max-width: 360px;
+  line-height: 1.6;
+}
+.hero-visual {
+  flex-shrink: 0;
+}
+
+.imc-ring {
+  width: 140px;
+  height: 140px;
+  filter: drop-shadow(0 8px 24px rgba(74, 144, 226, 0.18));
+  animation: ringPop 0.7s cubic-bezier(0.22, 0.68, 0, 1.2) both 0.2s;
+}
+
+@keyframes ringPop {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.hero-wave {
+  line-height: 0;
+  margin-top: -2px;
+}
+.hero-wave svg {
+  display: block;
+  width: 100%;
+  height: 40px;
+}
+
+.steps-section {
+  padding: 36px 8px 28px;
+}
+
+.section-title {
+  font-family: "Playfair Display", serif;
+  font-size: 1.45em;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.section-sub {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.88em;
+  margin-bottom: 28px;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+}
+
+.step-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.step-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(74, 144, 226, 0.18);
+}
+.step-card--blue {
+  border-top: 4px solid var(--blue);
+}
+.step-card--green {
+  border-top: 4px solid var(--green);
+}
+.step-card--orange {
+  border-top: 4px solid var(--orange);
+}
+
+.step-num {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 2em;
+  font-weight: 800;
+  opacity: 0.07;
+  font-family: "Playfair Display", serif;
+  color: var(--text);
+  line-height: 1;
+}
+
+.step-shape {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.step-shape--circle {
+  border-radius: 50%;
+  background: var(--blue);
+}
+.step-shape--rounded {
+  border-radius: 12px;
+  background: var(--green);
+}
+.step-shape--hex {
+  clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+  background: var(--orange);
+}
+
+.step-card h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.05em;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.step-card p {
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.benefits-section {
+  background: linear-gradient(135deg, #ebf4ff 0%, #eaf7ea 100%);
+  border-radius: var(--radius);
+  padding: 36px 28px;
+  margin-bottom: 0;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.benefit-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(74, 144, 226, 0.08);
+  transition: transform 0.2s;
+}
+
+.benefit-card:hover {
+  transform: translateY(-3px);
+}
+
+.benefit-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.benefit-icon--blue {
+  background: var(--blue);
+}
+.benefit-icon--gold {
+  background: linear-gradient(135deg, #f39c12, #f7c26b);
+}
+.benefit-icon--green {
+  background: var(--green);
+}
+
+.benefit-card h4 {
+  font-family: "Playfair Display", serif;
+  font-size: 1em;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.benefit-card p {
+  font-size: 0.84em;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.stats-section {
+  padding: 36px 8px;
+}
+
+.stats-inner {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 32px;
+}
+
+.stats-text {
+  flex: 1;
+  min-width: 200px;
+}
+
+.stats-label {
+  display: inline-block;
+  font-size: 0.72em;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--blue);
+  background: var(--blue-light);
+  padding: 3px 10px;
+  border-radius: 99px;
+  margin-bottom: 10px;
+}
+
+.stats-text h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.25em;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+.stats-text p {
+  font-size: 0.86em;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.stats-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge-pill {
+  font-size: 0.8em;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.badge-pill--blue {
+  background: var(--blue-light);
+  color: var(--blue);
+}
+.badge-pill--green {
+  background: #eaf7ea;
+  color: var(--green-dark);
+}
+.badge-pill--orange {
+  background: #fef6e8;
+  color: #b07d0a;
+}
+
+.stats-chart {
+  flex: 1;
+  min-width: 220px;
+}
+.chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.bar {
+  transition: opacity 0.2s;
+}
+.bar:hover {
+  opacity: 0.8;
+}
+
+.accueil-footer {
+  background: #2c3e50;
+  border-radius: var(--radius);
+  padding: 28px 24px 20px;
+  margin-top: 8px;
+  color: #adb5bd;
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Playfair Display", serif;
+  font-size: 1.15em;
+  color: #ffffff;
+}
+
+.footer-logo {
+  font-size: 1.3em;
+}
+
+.footer-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 0.87em;
+}
+
+.footer-nav a {
+  color: #adb5bd;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+.footer-nav a:hover {
+  color: #ffffff;
+}
+.footer-nav span {
+  color: #495057;
+}
+
+.footer-social {
+  display: flex;
+  gap: 14px;
+}
+
+.social-icon {
+  color: #6c757d;
+  transition:
+    color 0.2s,
+    transform 0.2s;
+  display: flex;
+}
+.social-icon:hover {
+  color: #4a90e2;
+  transform: translateY(-2px);
+}
+
+.footer-copy {
+  font-size: 0.78em;
+  color: #495057;
+  margin: 0;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 991px) {
+  .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: auto;
+    width: auto;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 0 0 var(--radius) 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    padding: 10px 0;
+  }
+
+  .navbar-nav {
+    flex-direction: column !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .brand-logo-img {
+    height: 40px;
+  }
+  .navbar-toggler {
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-inner {
+    padding: 32px 20px 42px;
+    flex-direction: column;
+    text-align: center;
+  }
+  .hero-title {
+    font-size: 1.55em;
+    max-width: 100%;
+  }
+  .hero-sub {
+    max-width: 100%;
+  }
+  .imc-ring {
+    width: 100px;
+    height: 100px;
+  }
+  .stats-inner {
+    flex-direction: column;
+    padding: 22px;
+  }
+  .benefits-section {
+    padding: 28px 16px;
+  }
+  .main-inner {
+    padding: 16px 12px 32px;
   }
 }
