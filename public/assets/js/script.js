@@ -1,3 +1,8 @@
+/* === fonctions utilitaire */
+const attendre = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+
+
 function togglePasswordVisibility(inputId) {
   const input = document.getElementById(inputId);
   const icon = event.target.closest(".toggle-icon");
@@ -135,6 +140,7 @@ function initClientHome() {
         }
         mainContent.innerHTML = data;
         attachMenuLinks();
+        attachRechargeForm();
         initImcGraph();
         initImcRing();
         initProfileWizard();
@@ -160,6 +166,80 @@ function initClientHome() {
           chargerPage(this.getAttribute("href"));
         }
       };
+    });
+  }
+
+  async function attachRechargeForm() {
+    const form = document.getElementById("recharge-form");
+    if (!form || form.dataset.bound === "true") {
+      return;
+    }
+
+    form.dataset.bound = "true";
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const messages = document.getElementById("recharge-messages");
+      const submitButton = form.querySelector("button[type=\"submit\"]");
+      const startedAt = Date.now();
+
+      if (messages) {
+        messages.innerHTML =
+          '<div class="alert alert-info" role="alert">Traitement en cours...</div>';
+      }
+      if (submitButton) {
+        submitButton.disabled = true;
+      }
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          body: new FormData(form),
+        });
+
+        const data = await response.json();
+        const elapsed = Date.now() - startedAt;
+        if (elapsed < 400) {
+          await attendre(400 - elapsed);
+        }
+
+        if (!response.ok) {
+          throw new Error(data?.message || "Erreur lors de la recharge");
+        }
+
+        const soldeEl = document.getElementById("solde-amount");
+        if (soldeEl && typeof data.solde !== "undefined") {
+          soldeEl.textContent = data.solde;
+        }
+
+        if (messages) {
+          messages.innerHTML =
+            '<div class="alert alert-success" role="alert">' +
+            data.message +
+            "</div>";
+        }
+
+        form.reset();
+      } catch (error) {
+        const elapsed = Date.now() - startedAt;
+        if (elapsed < 400) {
+          await attendre(400 - elapsed);
+        }
+
+        if (messages) {
+          messages.innerHTML =
+            '<div class="alert alert-danger" role="alert">' +
+            error.message +
+            "</div>";
+        }
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+        }
+      }
     });
   }
 
@@ -349,6 +429,7 @@ function initProfileWizard() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  console.lo
   const emailInputs = document.querySelectorAll('input[type="email"]');
   const emailErrorDiv = document.getElementById("email-error");
 

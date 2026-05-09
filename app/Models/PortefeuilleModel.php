@@ -39,4 +39,10 @@ class PortefeuilleModel extends Model
             'greater_than_equal_to'  => 'Le solde ne peut pas etre negatif.',
         ],
     ];
+
+    /* === Methodes utiles */
+
+    public function getPortefeuille(int $idUtilisateur){
+        return $this->where('id_utilisateur', $idUtilisateur)->first();
+    }
 }

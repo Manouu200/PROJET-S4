@@ -55,4 +55,8 @@ class CodeRechargeModel extends Model
             'is_natural_no_zero' => 'L utilisateur est invalide.',
         ],
     ];
+
+    public function getByCode($code){
+        return $this->where('code', $code)->first();
+    }
 }

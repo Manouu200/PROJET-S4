@@ -19,6 +19,11 @@ $routes->post('/api/check-email', 'InscriptionController::checkEmail');
 $routes->group('client', ['filter' => 'auth'], function ($routes) {
     $routes->get('home', 'ClientController::index');
     $routes->get('page/(:segment)', 'ClientController::page/$1');
+    $routes->group('solde', function($routes){
+        $routes->post('recharge', 'SoldeController::rechargerSolde');
+        $routes->post('recharger', 'SoldeController::rechargerSolde');
+    });
+    
     $routes->get('profil', 'ClientController::edit');
     $routes->post('profil/update', 'ClientController::update');
 });

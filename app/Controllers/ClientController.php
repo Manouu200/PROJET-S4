@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Services\SoldeService;
 use App\Libraries\Utils;
 use App\Models\HistoriqueSanteModel;
 use App\Models\UtilisateurModel;
@@ -16,6 +17,7 @@ class ClientController extends BaseController
         return view('client/home', $data);
     }
 
+
     public function page(string $page)
     {
         $allowedPages = [
@@ -28,6 +30,16 @@ class ClientController extends BaseController
 
         if (! array_key_exists($page, $allowedPages)) {
             return $this->response->setStatusCode(404);
+        }
+
+        $data = [];
+
+        switch ($page) {
+            case 'solde':
+
+            default:
+                # code...
+                break;
         }
 
         // If accueil, compute IMC server-side and pass to view (no model calls in views)
@@ -52,8 +64,12 @@ class ClientController extends BaseController
             }
 
             return view($allowedPages[$page], ['imc' => $imc]);
-        }
+        } else if ($page === 'solde') {
+            $service = new SoldeService();
+            $data['solde'] = $service->getSoldeUtilisateur(session()->get('user_id'));
 
+            return view($allowedPages[$page], $data);
+        }
         return view($allowedPages[$page]);
     }
 
