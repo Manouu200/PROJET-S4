@@ -20,7 +20,8 @@ $routes->group('client', ['filter' => 'auth'], function ($routes) {
     $routes->get('home', 'ClientController::index');
     $routes->get('page/(:segment)', 'ClientController::page/$1');
     $routes->group('solde', function($routes){
-        $routes->get('show', 'SoldeController::showSolde');
+        $routes->post('recharge', 'SoldeController::rechargerSolde');
+        $routes->post('recharger', 'SoldeController::rechargerSolde');
     });
     
 });

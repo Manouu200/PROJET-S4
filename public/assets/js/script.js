@@ -135,6 +135,7 @@ function initClientHome() {
         }
         mainContent.innerHTML = data;
         attachMenuLinks();
+        attachRechargeForm();
       })
       .catch((error) => {
         mainContent.innerHTML = "";
@@ -156,6 +157,57 @@ function initClientHome() {
           chargerPage(this.getAttribute("href"));
         }
       };
+    });
+  }
+
+  function attachRechargeForm() {
+    const form = document.getElementById("recharge-form");
+    if (!form || form.dataset.bound === "true") {
+      return;
+    }
+
+    form.dataset.bound = "true";
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const messages = document.getElementById("recharge-messages");
+      if (messages) {
+        messages.innerHTML = "";
+      }
+
+      fetch(form.action, {
+        method: "POST",
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        body: new FormData(form),
+      })
+        .then((response) =>
+          response
+            .json()
+            .then((data) => ({ ok: response.ok, data }))
+        )
+        .then(({ ok, data }) => {
+          if (!ok) {
+            throw new Error(data?.message || "Erreur lors de la recharge");
+          }
+
+          const soldeEl = document.getElementById("solde-amount");
+          if (soldeEl && typeof data.solde !== "undefined") {
+            soldeEl.textContent = data.solde;
+          }
+
+          if (messages) {
+            messages.innerHTML = "<pre>" + data.message + "</pre>";
+          }
+
+          form.reset();
+        })
+        .catch((error) => {
+          if (messages) {
+            messages.innerHTML = "<pre>" + error.message + "</pre>";
+          }
+        });
     });
   }
 
@@ -187,6 +239,7 @@ function initClientHome() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  console.lo
   const emailInputs = document.querySelectorAll('input[type="email"]');
   const emailErrorDiv = document.getElementById("email-error");
 
