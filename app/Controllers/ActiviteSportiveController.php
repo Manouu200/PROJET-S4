@@ -67,4 +67,6 @@ class ActiviteSportiveController extends BaseController
         $model->delete($id);
         return redirect()->to('/admin/sports')->with('success', 'Activité supprimée.');
     }
+
+    
 }

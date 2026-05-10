@@ -60,4 +60,8 @@ class ActiviteSportiveModel extends Model
                     ->orderBy('poids_variation', 'ASC')
                     ->findAll();
     }
+
+    public function getNombresSports(){
+        return $this->countAllResults();
+    }
 }

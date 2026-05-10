@@ -67,4 +67,10 @@ class RegimeModel extends Model
             'greater_than' => 'La durée doit être supérieure à 0.',
         ],
     ];
+
+    public function getNombresRegimes(){
+        return $this->countAllResults();
+    }
+
+
 }
