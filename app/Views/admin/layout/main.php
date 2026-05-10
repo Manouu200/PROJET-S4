@@ -86,6 +86,26 @@
                         </ul>
                     </li>
 
+                    <li class="has-submenu <?= (strpos(uri_string(), 'admin/imc') !== false) ? 'open' : '' ?>">
+                        <a href="javascript:void(0)" class="submenu-toggle <?= (strpos(uri_string(), 'admin/imc') !== false) ? 'active' : '' ?>">
+                            <i class="fa-solid fa-chart-simple"></i>
+                            <span>Paramètres IMC</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="<?= base_url('admin/imc') ?>" class="<?= (uri_string() == 'admin/imc') ? 'sub-active' : '' ?>">
+                                    <i class="fa-solid fa-table-list"></i> Liste des tranches
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?= base_url('admin/imc/create') ?>" class="<?= (uri_string() == 'admin/imc/create') ? 'sub-active' : '' ?>">
+                                    <i class="fa-solid fa-plus-circle"></i> Ajouter une tranche
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <hr class="nav-separator">
 
                     <li>
