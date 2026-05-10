@@ -63,6 +63,13 @@ CREATE TABLE activite_sportive (
     poids_variation DECIMAL(5,2) -- + ou -
 );
 
+CREATE TABLE imc (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    min DECIMAL(5,2),
+    max DECIMAL(5,2),
+    libelle VARCHAR(100)
+);
+
 -- PS: on ajoutera des lignes a cette table que si le paiement pour le programme est approuve
 CREATE TABLE programme_utilisateur (
     id INT AUTO_INCREMENT PRIMARY KEY,

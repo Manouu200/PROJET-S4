@@ -2,6 +2,8 @@
 
 namespace App\Libraries;
 
+use App\Models\IMCModel;
+
 class Utils
 {
     /**
@@ -36,18 +38,15 @@ class Utils
      */
     public static function categorieIMC(float $imc): string
     {
-        if ($imc < 18.5) {
-            return 'Maigreur';
+        $imcModel = new IMCModel();
+        $categorie = $imcModel->where('min <=', $imc)
+            ->where('max >', $imc)
+            ->first();
+
+        if ($categorie) {
+            return $categorie['libelle'];
         }
 
-        if ($imc < 25) {
-            return 'Corpulence normale';
-        }
-
-        if ($imc < 30) {
-            return 'Surpoids';
-        }
-
-        return 'Obésité';
+        return 'Inconnu';
     }
 }

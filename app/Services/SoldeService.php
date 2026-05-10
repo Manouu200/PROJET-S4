@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 
@@ -6,9 +6,11 @@ use App\Models\PortefeuilleModel;
 use App\Models\CodeRechargeModel;
 use App\Models\HistoriqueRechargeModel;
 
-class SoldeService {
+class SoldeService
+{
 
-    public function getSoldeUtilisateur($idUtilisateur){
+    public function getSoldeUtilisateur($idUtilisateur)
+    {
         $portefeuilleModel = new PortefeuilleModel();
         $portefeuille = $portefeuilleModel->getPortefeuille($idUtilisateur);
         if (!$portefeuille) {
@@ -17,8 +19,9 @@ class SoldeService {
 
         return (float) $portefeuille['solde'];
     }
-    
-    public function rechargerSolde($codeRecharge, $idUtilisateur){
+
+    public function rechargerSolde($codeRecharge, $idUtilisateur)
+    {
         $codeRecharge = trim((string) $codeRecharge);
         if ($codeRecharge === '') {
             return ['success' => false, 'message' => 'Code invalide'];
@@ -75,7 +78,8 @@ class SoldeService {
         return ['success' => true, 'message' => 'OK'];
     }
 
-    public function isCodeRechargeValid($codeRecharge): bool {
+    public function isCodeRechargeValid($codeRecharge): bool
+    {
         $codeModel = new CodeRechargeModel();
         $code = $codeModel->getByCode($codeRecharge);
         if (! $code) {
@@ -85,5 +89,3 @@ class SoldeService {
         return (int) $code['est_utilise'] !== 1;
     }
 }
-
-?>

@@ -165,13 +165,22 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Genre</label>
-                    <select name="genre" required>
-                        <option value="">Choisir</option>
-                        <option value="M" <?= old('genre', $user_genre ?? '') === 'M' ? 'selected' : '' ?>>Homme</option>
-                        <option value="F" <?= old('genre', $user_genre ?? '') === 'F' ? 'selected' : '' ?>>Femme</option>
-                        <option value="AUTRE" <?= old('genre', $user_genre ?? '') === 'AUTRE' ? 'selected' : '' ?>>Autre</option>
-                    </select>
+                    <div class="radio-group">
+                        <p>Genre</p>
+                        <div class="radio-options">
+                            <label class="radio-option">
+                                <input type="radio" name="genre" value="M"
+                                    <?= old('genre', $user_genre ?? '') === 'M' ? 'checked' : '' ?> required>
+                                <span>♂ Homme</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="genre" value="F"
+                                    <?= old('genre', $user_genre ?? '') === 'F' ? 'checked' : '' ?>>
+                                <span>♀ Femme</span>
+                            </label>
+
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
