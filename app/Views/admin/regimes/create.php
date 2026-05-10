@@ -85,8 +85,8 @@
                                         <input type="number" name="prix_duree[]" placeholder="7" required>
                                     </div>
                                     <div class="field">
-                                        <label>Prix (Ar)</label>
-                                        <input type="number" name="prix_valeur[]" placeholder="15000" required>
+                                        <label>Prix (£)</label>
+                                        <input type="number" name="prix_valeur[]" placeholder="10" required>
                                     </div>
                                 </div>
                                 <button type="button" class="btn-delete" onclick="removeRow(this)">

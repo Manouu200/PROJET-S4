@@ -28,6 +28,11 @@ class UtilisateurModel extends Model
         return $this->where('role', 'CLIENT')->countAllResults();
     }
 
+    public function getNombresClientsGold()
+    {
+        return $this->where('role', 'CLIENT')->where('est_gold', true)->countAllResults();
+    }
+
     public function getIdByEmail(string $email): ?int
     {
         $user = $this->select('id')->where('email', $email)->first();

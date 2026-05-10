@@ -79,7 +79,7 @@
                                         <input type="number" name="prix_duree[]" value="<?= $p['duree_jours'] ?>" required>
                                     </div>
                                     <div class="field">
-                                        <label>Prix (Ar)</label>
+                                        <label>Prix (£)</label>
                                         <input type="number" name="prix_valeur[]" value="<?= $p['prix'] ?>" required>
                                     </div>
                                 </div>
@@ -112,7 +112,7 @@
         newRow.innerHTML = `
             <div class="price-inputs">
                 <div class="field"><label>Durée (jours)</label><input type="number" name="prix_duree[]" required></div>
-                <div class="field"><label>Prix (Ar)</label><input type="number" name="prix_valeur[]" required></div>
+                <div class="field"><label>Prix (£)</label><input type="number" name="prix_valeur[]" required></div>
             </div>
             <button type="button" class="btn-delete" onclick="removeRow(this)"><i class="fa-solid fa-xmark"></i></button>
         `;
