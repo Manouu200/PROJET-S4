@@ -190,7 +190,9 @@
 
                             <div class="regimes-objectif-panel" id="regimes-objectif-panel" hidden
                                 data-poids-actuel="<?= esc((string) ($poids_actuel ?? '')) ?>"
-                                data-poids-ideal="<?= esc((string) ($poids_ideal ?? '')) ?>">
+                                data-poids-ideal="<?= esc((string) ($poids_ideal ?? '')) ?>"
+                                data-poids-ideal-min="<?= esc((string) ($poids_ideal_min ?? '')) ?>"
+                                data-poids-ideal-max="<?= esc((string) ($poids_ideal_max ?? '')) ?>">
                                 <div class="regimes-objectif-panel-head">
                                     <span class="section-badge" id="regimes-objectif-panel-badge">Calcul objectif</span>
                                     <h3 class="regimes-objectif-panel-title" id="regimes-objectif-panel-title">Cliquez sur un objectif</h3>
@@ -198,10 +200,16 @@
                                 </div>
 
                                 <div class="regimes-objectif-field" id="regimes-objectif-field" hidden>
-                                    <label class="regimes-objectif-field-label" for="regimes-objectif-input" id="regimes-objectif-field-label">Poids à perdre</label>
-                                    <div class="regimes-objectif-input-row">
-                                        <input type="number" id="regimes-objectif-input" min="0" step="0.1" inputmode="decimal" placeholder="0">
-                                        <span class="regimes-objectif-unit">kg</span>
+                                    <label class="regimes-objectif-field-label" for="regimes-objectif-input-min" id="regimes-objectif-field-label">Plage cible</label>
+                                    <div class="regimes-objectif-input-col">
+                                        <div class="regimes-objectif-input-row">
+                                            <input type="number" id="regimes-objectif-input-min" min="0" step="0.1" inputmode="decimal" placeholder="Poids min">
+                                            <span class="regimes-objectif-unit">kg</span>
+                                        </div>
+                                        <div class="regimes-objectif-input-row" style="margin-top:8px;">
+                                            <input type="number" id="regimes-objectif-input-max" min="0" step="0.1" inputmode="decimal" placeholder="Poids max">
+                                            <span class="regimes-objectif-unit">kg</span>
+                                        </div>
                                     </div>
                                 </div>
 

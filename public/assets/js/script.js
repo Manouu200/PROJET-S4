@@ -535,7 +535,8 @@ function initRegimesObjectives() {
   const panel = document.getElementById("regimes-objectif-panel");
   const field = document.getElementById("regimes-objectif-field");
   const fieldLabel = document.getElementById("regimes-objectif-field-label");
-  const input = document.getElementById("regimes-objectif-input");
+  const inputMin = document.getElementById("regimes-objectif-input-min");
+  const inputMax = document.getElementById("regimes-objectif-input-max");
   const summaryLabel = document.getElementById(
     "regimes-objectif-summary-label",
   );
@@ -551,7 +552,8 @@ function initRegimesObjectives() {
     !panel ||
     !field ||
     !fieldLabel ||
-    !input ||
+    !inputMin ||
+    !inputMax ||
     !summaryLabel ||
     !summaryValue ||
     !title ||
@@ -575,6 +577,13 @@ function initRegimesObjectives() {
     return `${numericValue.toFixed(1)} kg`;
   }
 
+  function formatRange(min, max) {
+    const a = Number(min);
+    const b = Number(max);
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return "-- kg";
+    return `${a.toFixed(1)}–${b.toFixed(1)} kg`;
+  }
+
   function resetPanel() {
     activeId = null;
     if (layout) {
@@ -582,7 +591,8 @@ function initRegimesObjectives() {
     }
     panel.hidden = true;
     field.hidden = true;
-    input.value = "";
+    inputMin.value = "";
+    inputMax.value = "";
     summaryLabel.textContent = "Objectif";
     summaryValue.textContent = "-- kg";
     title.textContent = defaultTitle;
@@ -597,7 +607,18 @@ function initRegimesObjectives() {
   }
 
   async function fetchObjective(objectifId, valeur) {
-    const url = `${baseUrl}/client/regimes/calculer?objectif_id=${encodeURIComponent(objectifId)}&valeur=${encodeURIComponent(valeur ?? "")}`;
+    // valeur can be an object {min, max} or strings
+    let url = `${baseUrl}/client/regimes/calculer?objectif_id=${encodeURIComponent(objectifId)}`;
+    if (valeur && typeof valeur === "object") {
+      if (valeur.min !== undefined && valeur.min !== null) {
+        url += `&min=${encodeURIComponent(String(valeur.min))}`;
+      }
+      if (valeur.max !== undefined && valeur.max !== null) {
+        url += `&max=${encodeURIComponent(String(valeur.max))}`;
+      }
+    } else {
+      url += `&min=&max=`;
+    }
     const response = await fetch(url, {
       headers: {
         "X-Requested-With": "XMLHttpRequest",
@@ -606,11 +627,8 @@ function initRegimesObjectives() {
 
     const data = await response.json();
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || "Calcul indisponible");
-    }
-
-    return data;
+    // Return full payload; caller handles success vs validation
+    return { ok: response.ok, ...data };
   }
 
   function renderObjective(data) {
@@ -626,13 +644,41 @@ function initRegimesObjectives() {
 
     if (data.needs_input) {
       field.hidden = false;
-      fieldLabel.textContent = data.input_label || "Valeur";
+      fieldLabel.textContent = data.input_label || "Plage cible";
+      // prefill min/max if provided
+      if (
+        data.target_min !== undefined &&
+        data.target_max !== undefined &&
+        data.target_min !== null &&
+        data.target_max !== null
+      ) {
+        inputMin.value = data.target_min;
+        inputMax.value = data.target_max;
+      } else {
+        inputMin.value = "";
+        inputMax.value = "";
+      }
+      summaryValue.textContent =
+        data.target_min !== undefined &&
+        data.target_max !== undefined &&
+        data.target_min !== null &&
+        data.target_max !== null
+          ? formatRange(data.target_min, data.target_max)
+          : "-- kg";
     } else {
       field.hidden = true;
-      input.value = "";
+      inputMin.value = "";
+      inputMax.value = "";
+      summaryValue.textContent =
+        data.target_min !== undefined &&
+        data.target_max !== undefined &&
+        data.target_min !== null &&
+        data.target_max !== null
+          ? formatRange(data.target_min, data.target_max)
+          : data.target_weight !== undefined
+            ? formatKg(data.target_weight)
+            : "-- kg";
     }
-
-    summaryValue.textContent = formatKg(data.target_weight);
   }
 
   function scheduleRefresh() {
@@ -645,11 +691,68 @@ function initRegimesObjectives() {
     }
 
     debounceTimer = setTimeout(async () => {
+      // client-side validation: mark offending inputs, do not call server if invalid
+      const minVal = inputMin.value.trim();
+      const maxVal = inputMax.value.trim();
+      const minNum = minVal === "" ? null : Number(minVal.replace(",", "."));
+      const maxNum = maxVal === "" ? null : Number(maxVal.replace(",", "."));
+
+      // clear previous error marks
+      inputMin.classList.remove("input-error");
+      inputMax.classList.remove("input-error");
+
+      // If either input is empty, show field but don't call server yet
+      if (minNum === null || maxNum === null) {
+        if (minNum === null) inputMin.classList.add("input-error");
+        if (maxNum === null) inputMax.classList.add("input-error");
+        summaryValue.textContent = "-- kg";
+        return;
+      }
+
+      // invalid numbers
+      if (
+        !Number.isFinite(minNum) ||
+        !Number.isFinite(maxNum) ||
+        minNum < 0 ||
+        maxNum < 0
+      ) {
+        if (!Number.isFinite(minNum) || minNum < 0)
+          inputMin.classList.add("input-error");
+        if (!Number.isFinite(maxNum) || maxNum < 0)
+          inputMax.classList.add("input-error");
+        summaryValue.textContent = "-- kg";
+        return;
+      }
+
+      // min must be <= max
+      if (minNum > maxNum) {
+        inputMin.classList.add("input-error");
+        inputMax.classList.add("input-error");
+        summaryValue.textContent = "-- kg";
+        return;
+      }
+
       try {
-        const data = await fetchObjective(activeId, input.value);
+        const payload = { min: String(minNum), max: String(maxNum) };
+        const data = await fetchObjective(activeId, payload);
+
+        if (!data.ok || !data.success) {
+          // mark inputs on server-side validation failure
+          inputMin.classList.add("input-error");
+          inputMax.classList.add("input-error");
+          summaryValue.textContent = "-- kg";
+          return;
+        }
+
+        // success
+        inputMin.classList.remove("input-error");
+        inputMax.classList.remove("input-error");
         renderObjective(data);
-      } catch (error) {
-        summaryValue.textContent = error.message;
+      } catch (err) {
+        // network/fetch error: keep summary neutral and mark inputs
+        inputMin.classList.add("input-error");
+        inputMax.classList.add("input-error");
+        summaryValue.textContent = "-- kg";
       }
     }, 250);
   }
@@ -680,7 +783,8 @@ function initRegimesObjectives() {
 
       radio.checked = true;
       activeId = objectifId;
-      input.value = "";
+      inputMin.value = "";
+      inputMax.value = "";
       summaryLabel.textContent = "Objectif";
       summaryValue.textContent = "Calcul en cours...";
       if (layout) {
@@ -690,11 +794,11 @@ function initRegimesObjectives() {
       field.hidden = false;
 
       try {
-        const data = await fetchObjective(objectifId, "");
+        const data = await fetchObjective(objectifId, { min: null, max: null });
         renderObjective(data);
 
         if (data.needs_input) {
-          input.focus();
+          inputMin.focus();
         }
       } catch (error) {
         summaryValue.textContent = error.message;
@@ -702,7 +806,8 @@ function initRegimesObjectives() {
     });
   });
 
-  input.addEventListener("input", scheduleRefresh);
+  inputMin.addEventListener("input", scheduleRefresh);
+  inputMax.addEventListener("input", scheduleRefresh);
 
   if (submitBtn) {
     submitBtn.addEventListener("click", function () {
