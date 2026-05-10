@@ -59,4 +59,20 @@ class CodeRechargeModel extends Model
     public function getByCode($code){
         return $this->where('code', $code)->first();
     }
+
+    public function getCodeStats(){
+        $nbCodeUtilises = $this->where('est_utilise', 1)->countAllResults();
+        $montantCodesUtilises=$this->selectSum('montant')->where('est_utilise', 1)->first()['montant'];
+
+        $nbCodesValides = $this->where('est_utilise', 0)->countAllResults();
+        $montantCodesValides=$this->selectSum('montant')->where('est_utilise', 0)->first()['montant'];
+
+        return [
+            'nbCodeUtilises' => $nbCodeUtilises,
+            'montantCodesUtilises' => $montantCodesUtilises,
+            'nbCodesValides' => $nbCodesValides,
+            'montantCodesValides' => $montantCodesValides
+        ];
+
+    }
 }
