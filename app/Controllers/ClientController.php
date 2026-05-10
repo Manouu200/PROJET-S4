@@ -92,6 +92,10 @@ class ClientController extends BaseController
         $taille = $derniereMesure['taille'] ?? null;
         $imc = ($poids !== null && $taille !== null) ? Utils::calculerIMC((float) $poids, (float) $taille) : null;
 
+        // Calcul des poids idéaux
+        $poidsIdealInterval = $taille ? Utils::poidsIdealInterval((float) $taille) : null;
+        $poidsIdeal = $taille ? Utils::poidsIdeal((float) $taille) : null;
+
         $data = [
             'user' => $user,
             'user_nom' => $user['nom'] ?? session()->get('user_nom'),
@@ -106,6 +110,9 @@ class ClientController extends BaseController
             'tailleDerniereMesure' => isset($derniereMesure['taille']) ? (string) $derniereMesure['taille'] : '',
             'imc' => $imc,
             'imc_categorie' => $imc !== null ? Utils::categorieIMC((float) $imc) : null,
+            'poids_ideal_min' => $poidsIdealInterval['min'] ?? 0,
+            'poids_ideal_max' => $poidsIdealInterval['max'] ?? 0,
+            'poids_ideal' => $poidsIdeal,
         ];
 
         // Prepare flash HTML to avoid business logic in views

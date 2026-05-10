@@ -1549,3 +1549,17 @@ button:active {
 .profile-form button {
   margin-top: 6px;
 }
+/* ── IMC IDEAL SECTION ───────────────── */
+.imc-ideal-grid {
+  margin-top: 18px;
+}
+
+.imc-ideal-grid .benefit-card {
+  border: 1px solid rgba(74, 144, 226, 0.12);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.imc-ideal-grid .benefit-card strong {
+  font-size: 1.05em;
+  color: var(--text);
+}

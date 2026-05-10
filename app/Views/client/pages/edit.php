@@ -12,6 +12,9 @@
  * @var array<string, mixed>|null $derniere_mesure
  * @var string $poidsDerniereMesure
  * @var string $tailleDerniereMesure
+ * @var int $poids_ideal_min
+ * @var int $poids_ideal_max
+ * @var float $poids_ideal
  */
 ?>
 <div class="page-box">
@@ -63,7 +66,33 @@
             </div>
         </div>
     </div>
+    <!-- ── IMC IDEAL ───────────────── -->
+    <div class="benefits-grid imc-ideal-grid">
 
+        <div class="benefit-card">
+            <div class="benefit-icon benefit-icon--blue">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M3 12h18" />
+                    <path d="M12 3v18" />
+                </svg>
+            </div>
+
+            <h4>Poids idéal (plage)</h4>
+            <p><strong><?= esc((string)$poids_ideal_min) ?> kg → <?= esc((string)$poids_ideal_max) ?> kg</strong><br>Zone de poids sain selon votre taille.</p>
+        </div>
+
+        <div class="benefit-card">
+            <div class="benefit-icon benefit-icon--green">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M20 6L9 17l-5-5" />
+                </svg>
+            </div>
+
+            <h4>Poids idéal cible</h4>
+            <p><strong><?= esc((string)$poids_ideal) ?> kg</strong><br>Objectif recommandé pour un IMC optimal.</p>
+        </div>
+
+    </div>
     <!-- ── MODIFIER MES INFOS ───────────────── -->
     <div class="profile-section">
 
