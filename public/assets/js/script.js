@@ -119,13 +119,11 @@ function initRegimesSuggestions() {
     const resultsSection = document.getElementById('regimes-results');
     const panel = document.getElementById('regimes-objectif-panel');
 
-    // On sort si on n'est pas sur la bonne page
     if (!form || !submitBtn || !panel) return;
 
-    // On stocke le contenu original du bouton (avec le SVG) pour le remettre après
     const originalBtnContent = submitBtn.innerHTML;
-
     const baseUrl = getBaseUrl().replace(/\/$/, "");
+    
     const poidsActuel = panel.dataset.poidsActuel;
     const poidsIdealMin = panel.dataset.poidsIdealMin;
     const poidsIdealMax = panel.dataset.poidsIdealMax;
@@ -142,14 +140,8 @@ function initRegimesSuggestions() {
             return;
         }
 
-        let pMin, pMax;
-        if (selectedRadio.value === "3") {
-            pMin = poidsIdealMin;
-            pMax = poidsIdealMax;
-        } else {
-            pMin = inputMin.value;
-            pMax = inputMax.value;
-        }
+        let pMin = (selectedRadio.value === "3") ? poidsIdealMin : inputMin.value;
+        let pMax = (selectedRadio.value === "3") ? poidsIdealMax : inputMax.value;
 
         if (!pMin || !pMax) {
             alert("Veuillez définir un intervalle de poids.");
@@ -160,48 +152,52 @@ function initRegimesSuggestions() {
             submitBtn.disabled = true;
             submitBtn.innerHTML = "⏳ Recherche...";
 
-            // Préparation des données POST
             const formData = new FormData();
             formData.append('poidsIndividu', poidsActuel);
             formData.append('poidsMin', pMin);
             formData.append('poidsMax', pMax);
 
-            const url = `${baseUrl}/client/programmes/obtenir-suggestions`;
-            
-            const response = await fetch(url, {
+            const response = await fetch(`${baseUrl}/client/programmes/obtenir-suggestions`, {
                 method: 'POST',
                 body: formData,
-                // Pas besoin de 'Content-Type', FormData le gère automatiquement
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest' // Bonne pratique pour CodeIgniter
-                }
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
             });
 
-            if (!response.ok) throw new Error('Erreur serveur');
-            
             const programmes = await response.json();
-
-            // Mise à jour de la vue
             const grid = document.querySelector('.regimes-cards-grid');
             grid.innerHTML = '';
 
             if (!programmes || programmes.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">Aucun programme ne correspond à ces critères.</p>';
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px;">Aucun programme trouvé.</p>';
             } else {
                 programmes.forEach(prog => {
-                    // Adaptation des clés selon ce que renvoie ton AlgoSuggestion
+                    // Construction de la carte avec les bonnes clés du JSON
                     const card = `
                         <div class="regime-card regime-card--blue">
-                            <div class="regime-card-top"><span class="regime-card-badge">Disponible</span></div>
-                            <h4 class="regime-card-title">${prog.nom_programme || 'Programme'}</h4>
-                            <p class="regime-card-objectif">${prog.description || 'Description non disponible'}</p>
+                            <div class="regime-card-top">
+                                <span class="regime-card-badge">Score: ${prog.score.toFixed(1)}</span>
+                            </div>
+                            <h4 class="regime-card-title">${prog.regime}</h4>
+                            <p class="regime-card-objectif">
+                                🎯 Objectif final : <strong>${prog.poids_final} kg</strong>
+                            </p>
                             <div class="regime-card-stats">
                                 <div class="regime-stat">
-                                    <span class="regime-stat-val">${prog.total_calories || '--'}</span>
-                                    <span class="regime-stat-unit">kcal/j</span>
+                                    <span class="regime-stat-val">${prog.duree}</span>
+                                    <span class="regime-stat-unit">jours</span>
+                                </div>
+                                <div class="regime-stat">
+                                    <span class="regime-stat-val">${prog.prix.toFixed(2)}</span>
+                                    <span class="regime-stat-unit">€</span>
                                 </div>
                             </div>
-                            <button type="button" class="regime-card-btn btn-primary" style="margin-top:14px;">Choisir ce régime</button>
+                            <div class="regime-card-tags">
+                                <span class="badge-pill badge-pill--blue">${prog.type}</span>
+                                ${prog.sport ? `<span class="badge-pill badge-pill--orange">Sport inclus</span>` : ''}
+                            </div>
+                            <button type="button" class="regime-card-btn btn-primary" style="margin-top:14px;">
+                                Choisir ce programme
+                            </button>
                         </div>`;
                     grid.insertAdjacentHTML('beforeend', card);
                 });
@@ -210,11 +206,10 @@ function initRegimesSuggestions() {
             resultsSection.scrollIntoView({ behavior: "smooth" });
 
         } catch (error) {
-            console.error("Erreur Fetch:", error);
-            alert("Une erreur est survenue lors de la récupération des programmes.");
+            console.error("Erreur:", error);
         } finally {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnContent; // On remet le texte et le SVG
+            submitBtn.innerHTML = originalBtnContent;
         }
     };
 }
