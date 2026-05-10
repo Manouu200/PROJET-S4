@@ -9,7 +9,7 @@
             </div>
 
             <div class="imc-value" id="solde-amount">
-                $<?= esc((string)$solde) ?>
+                £<?= esc((string)$solde) ?>
             </div>
         </div>
 
