@@ -33,4 +33,9 @@ class PaiementsGoldEffectuesModel extends Model
             'is_not_unique' => 'Cette remise GOLD n’existe pas.'
         ]
     ];
+
+    public function isGold(int $idUtilisateur){
+        return $this->where('id_utilisateur', $idUtilisateur)
+                ->countAllResults() > 0;   
+    }
 }

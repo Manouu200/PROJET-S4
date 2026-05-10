@@ -34,4 +34,10 @@ class HistoriqueRemisesGoldModel extends Model
             'less_than_equal_to' => 'La remise ne peut pas dépasser 100%.'
         ]
     ];
+
+    public function getInfosActuelGold(): ?array
+    {
+        return $this->orderBy('created_at', 'DESC')
+                    ->first();
+    }
 }

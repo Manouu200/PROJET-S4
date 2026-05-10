@@ -11,7 +11,7 @@ class UtilisateurModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['nom', 'prenom', 'date_naissance', 'genre', 'email', 'mot_de_passe', 'est_gold', 'role', 'porte_monnaie'];
+    protected $allowedFields = ['nom', 'prenom', 'date_naissance', 'genre', 'email', 'mot_de_passe', 'est_gold', 'role'];
     protected $useTimestamps = false;
 
     public function login($email, $password)
@@ -33,5 +33,12 @@ class UtilisateurModel extends Model
         $user = $this->select('id')->where('email', $email)->first();
 
         return $user ? (int) $user['id'] : null;
+    }
+
+    public function estGold(int $idUtilisateur){
+        $user = $this->find($idUtilisateur);
+        if (!$user || !$user['est_gold'])
+            return false;
+        return true;
     }
 }

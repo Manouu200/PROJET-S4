@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Services\SoldeService;
+use App\Services\GoldService;
 use App\Libraries\Utils;
 use App\Models\HistoriqueSanteModel;
 use App\Models\UtilisateurModel;
@@ -42,6 +43,7 @@ class ClientController extends BaseController
                 break;
         }
 
+        $userId = session()->get('user_id');
         // If accueil, compute IMC server-side and pass to view (no model calls in views)
         if ($page === 'accueil') {
             $imc = null;
@@ -69,7 +71,16 @@ class ClientController extends BaseController
             $data['solde'] = $service->getSoldeUtilisateur(session()->get('user_id'));
 
             return view($allowedPages[$page], $data);
+        } else if ($page === 'gold'){
+            $goldService = new GoldService();
+            if ($goldService->isGold($userId)){
+                $data['peut_acheter'] = false;
+            } else {
+                $data['peut_acheter'] = true;
+            }
+            return view($allowedPages[$page], $data);
         }
+
         return view($allowedPages[$page]);
     }
 

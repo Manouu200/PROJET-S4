@@ -1,9 +1,9 @@
 <h1>⭐ Passez à GOLD</h1>
 
-<p>
-    Débloquez des programmes premium et des conseils exclusifs.
-</p>
+<?php if (!$peut_acheter): ?>
+    <p>Vous etes deja un membre GOLD !</p>
 
-<button>
-    Devenir GOLD
-</button>
+<?php else: ?>
+    <p>Débloquez des programmes premium et des conseils exclusifs.</p>
+    <button>Devenir GOLD</button>
+<?php endif; ?>
