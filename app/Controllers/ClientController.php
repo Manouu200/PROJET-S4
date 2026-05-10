@@ -13,36 +13,137 @@ use App\Models\ObjectifModel;
 class ClientController extends BaseController
 {
     public function regimes()
-{
-    $userId = session()->get('user_id');
-    $email = (string) session()->get('user_email');
+    {
+        $profil = $this->getRegimeProfil();
+        $objectifModel = new ObjectifModel();
 
-    $utilisateurModel = new UtilisateurModel();
-    $historiqueModel = new HistoriqueSanteModel();
-    $objectifModel = new ObjectifModel();
-
-    if (empty($userId) && $email !== '') {
-        $userId = $utilisateurModel->getIdByEmail($email);
+        return view('client/pages/regimes', [
+            'utilisateur' => $profil['utilisateur'],
+            'objectifs' => $objectifModel->getObjectifsOrdered(),
+            'poids_actuel' => $profil['poids_actuel'],
+            'taille_actuelle' => $profil['taille_actuelle'],
+            'poids_ideal' => $profil['poids_ideal'],
+        ]);
     }
 
-    $user = $userId ? $utilisateurModel->find($userId) : null;
-    $derniereMesure = $userId ? $historiqueModel->getDerniereMesureByUserId((int) $userId) : null;
+    public function calculerObjectif()
+    {
+        if (! $this->request->isAJAX()) {
+            return $this->response->setStatusCode(403)->setJSON([
+                'success' => false,
+                'message' => 'Requête invalide.',
+            ]);
+        }
 
-    $poids = $derniereMesure['poids'] ?? null;
-    $taille = $derniereMesure['taille'] ?? null;
-    $imc = ($poids !== null && $taille !== null) ? Utils::calculerIMC((float) $poids, (float) $taille) : null;
+        $objectifId = (int) $this->request->getGet('objectif_id');
+        $valeur = trim((string) $this->request->getGet('valeur'));
 
-    $data = [
-        'utilisateur' => $user ? array_merge($user, [
-            'poids' => $poids,
-            'taille' => $taille,
-            'imc' => $imc,
-        ]) : null,
-        'objectifs' => $objectifModel->orderBy('nom_objectif', 'ASC')->findAll(),
-    ];
+        $objectifModel = new ObjectifModel();
+        $objectif = $objectifModel->getObjectifById($objectifId);
+        if (! $objectif) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Objectif introuvable.',
+            ]);
+        }
 
-    return view('client/pages/regimes', $data);
-}
+        $profil = $this->getRegimeProfil();
+        if ($profil['poids_actuel'] === null || $profil['taille_actuelle'] === null) {
+            return $this->response->setStatusCode(422)->setJSON([
+                'success' => false,
+                'message' => 'Impossible de calculer sans poids et taille.',
+            ]);
+        }
+
+        $poidsActuel = (float) $profil['poids_actuel'];
+        $poidsIdeal = (float) $profil['poids_ideal'];
+        $objectifLabel = (string) ($objectif['nom_objectif'] ?? 'Objectif');
+
+        $inputLabel = null;
+        $description = '';
+        $targetWeight = null;
+
+        if ($objectifId === 1) {
+            $inputLabel = 'Poids à perdre';
+            $description = 'Entrez la quantité de poids à perdre pour afficher votre cible.';
+            if ($valeur !== '') {
+                $perte = (float) str_replace(',', '.', $valeur);
+                if ($perte <= 0) {
+                    return $this->response->setStatusCode(422)->setJSON([
+                        'success' => false,
+                        'message' => 'Entrez un poids à perdre supérieur à 0.',
+                    ]);
+                }
+                $targetWeight = max(0, round($poidsActuel - $perte, 1));
+            }
+        } elseif ($objectifId === 2) {
+            $inputLabel = 'Poids à prendre';
+            $description = 'Entrez la quantité de poids à prendre pour afficher votre cible.';
+            if ($valeur !== '') {
+                $prise = (float) str_replace(',', '.', $valeur);
+                if ($prise <= 0) {
+                    return $this->response->setStatusCode(422)->setJSON([
+                        'success' => false,
+                        'message' => 'Entrez un poids à prendre supérieur à 0.',
+                    ]);
+                }
+                $targetWeight = round($poidsActuel + $prise, 1);
+            }
+        } elseif ($objectifId === 3) {
+            $description = 'Poids idéal cible calculé selon votre taille.';
+            $targetWeight = round($poidsIdeal, 1);
+        } else {
+            return $this->response->setStatusCode(422)->setJSON([
+                'success' => false,
+                'message' => 'Cet objectif ne peut pas être calculé.',
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'objectif_id' => $objectifId,
+            'objectif_label' => $objectifLabel,
+            'input_label' => $inputLabel,
+            'description' => $description,
+            'current_weight' => round($poidsActuel, 1),
+            'ideal_weight' => round($poidsIdeal, 1),
+            'target_weight' => $targetWeight,
+            'needs_input' => in_array($objectifId, [1, 2], true),
+        ]);
+    }
+
+    private function getRegimeProfil(): array
+    {
+        $userId = session()->get('user_id');
+        $email = (string) session()->get('user_email');
+
+        $utilisateurModel = new UtilisateurModel();
+        $historiqueModel = new HistoriqueSanteModel();
+
+        if (empty($userId) && $email !== '') {
+            $userId = $utilisateurModel->getIdByEmail($email);
+        }
+
+        $userId = $userId ? (int) $userId : null;
+        $user = $userId ? $utilisateurModel->find($userId) : null;
+        $derniereMesure = $userId ? $historiqueModel->getDerniereMesureByUserId($userId) : null;
+
+        $poids = $derniereMesure['poids'] ?? null;
+        $taille = $derniereMesure['taille'] ?? null;
+        $imc = ($poids !== null && $taille !== null) ? Utils::calculerIMC((float) $poids, (float) $taille) : null;
+
+        return [
+            'utilisateur' => $user ? array_merge($user, [
+                'poids' => $poids,
+                'taille' => $taille,
+                'imc' => $imc,
+            ]) : null,
+            'poids_actuel' => $poids !== null ? (float) $poids : null,
+            'taille_actuelle' => $taille !== null ? (float) $taille : null,
+            'poids_ideal' => $taille !== null ? Utils::poidsIdeal((float) $taille) : null,
+        ];
+    }
+
     public function index()
     {
         $data = [

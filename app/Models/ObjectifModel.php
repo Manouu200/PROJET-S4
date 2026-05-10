@@ -14,4 +14,16 @@ class ObjectifModel extends Model
     protected $allowedFields = [
         'nom_objectif',
     ];
+
+    public function getObjectifsOrdered(): array
+    {
+        return $this->orderBy('id', 'ASC')->findAll() ?: [];
+    }
+
+    public function getObjectifById(int $objectifId): ?array
+    {
+        $objectif = $this->find($objectifId);
+
+        return is_array($objectif) ? $objectif : null;
+    }
 }
