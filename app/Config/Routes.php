@@ -57,4 +57,12 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('codes/create', 'CodeRechargeController::create');
     $routes->post('codes/store', 'CodeRechargeController::store');
     $routes->get('codes/delete/(:num)', 'CodeRechargeController::delete/$1');
+
+    // IMC
+    $routes->get('imc', 'IMCController::index');          // Liste
+    $routes->get('imc/create', 'IMCController::create');   // Formulaire Ajout
+    $routes->post('imc/store', 'IMCController::store');    // Action Ajout
+    $routes->get('imc/edit/(:num)', 'IMCController::edit/$1'); // Formulaire Edit
+    $routes->post('imc/update/(:num)', 'IMCController::update/$1'); // Action Edit
+    $routes->get('imc/delete/(:num)', 'IMCController::delete/$1');
 });
