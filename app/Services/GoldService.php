@@ -1,17 +1,18 @@
-<?php 
+<?php
 
 namespace App\Services;
 
 use App\Models\HistoriqueRemisesGoldModel;
 use App\Models\PaiementsGoldEffectuesModel;
 use App\Models\UtilisateurModel;
+use App\Models\PortefeuilleModel;
 
-class GoldService {
+class GoldService
+{
 
-// TODO
+    // TODO
     public function payerAbonnementGold(int $idUtilisateur): array
     {
-        // déjà GOLD
         if ($this->isGold($idUtilisateur)) {
             return [
                 'isSuccess' => false,
@@ -19,13 +20,13 @@ class GoldService {
             ];
         }
 
-        $soldeService     = new SoldeService();
-        $goldModel        = new HistoriqueRemisesGoldModel();
-        $paiementsGolsModel = new PaiementsGoldEffectuesModel();
-        $utilisateurModel = new UtilisateurModel();
+        $soldeService        = new SoldeService();
+        $goldModel           = new HistoriqueRemisesGoldModel();
+        $paiementModel       = new PaiementsGoldEffectuesModel();
+        $utilisateurModel    = new UtilisateurModel();
+        $portefeuilleModel   = new PortefeuilleModel();
 
-        // offre GOLD actuelle
-        $offreGold = $goldModel->getPrixActuelGold();
+        $offreGold = $goldModel->getInfosActuelGold();
 
         if (!$offreGold) {
             return [
@@ -35,9 +36,10 @@ class GoldService {
         }
 
         $prixGold = (float) $offreGold['prix'];
-        $soldeActuel = $soldeService->getSoldeUtilisateur($idUtilisateur);
 
-        if ($soldeActuel < $prixGold) {
+        $portefeuille = $portefeuilleModel->getPortefeuille($idUtilisateur);
+
+        if (!$portefeuille || $portefeuille['solde'] < $prixGold) {
             return [
                 'isSuccess' => false,
                 'details'   => 'Solde insuffisant'
@@ -47,15 +49,20 @@ class GoldService {
         $db = \Config\Database::connect();
         $db->transStart();
 
-        // 1. paiement GOLD
-        $paiementsGolsModel->insert([
+        // 1. débiter portefeuille
+        $portefeuilleModel->update($portefeuille['id'], [
+            'solde' => $portefeuille['solde'] - $prixGold
+        ]);
+
+        // 2. enregistrer paiement GOLD
+        $paiementModel->insert([
             'id_utilisateur' => $idUtilisateur,
             'id_historique_remises_gold' => $offreGold['id']
         ]);
 
-        // 2. update utilisateur
+        // 3. passer utilisateur GOLD
         $utilisateurModel->update($idUtilisateur, [
-            'est_gold'      => 1
+            'est_gold' => 1
         ]);
 
         $db->transComplete();
@@ -73,7 +80,8 @@ class GoldService {
         ];
     }
 
-    public function isGold(int $idUtilisateur): bool {
+    public function isGold(int $idUtilisateur): bool
+    {
         // d'abord on peut verifier dans utilisateurs.est_gold
         $utilisateurModel = new UtilisateurModel();
         if (!$utilisateurModel->estGold($idUtilisateur))
@@ -86,7 +94,4 @@ class GoldService {
 
         return true;
     }
-
 }
-
-?>

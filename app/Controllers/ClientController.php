@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Services\SoldeService;
 use App\Services\GoldService;
 use App\Libraries\Utils;
+use App\Models\HistoriqueRemisesGoldModel;
 use App\Models\HistoriqueSanteModel;
 use App\Models\UtilisateurModel;
 
@@ -77,6 +78,7 @@ class ClientController extends BaseController
                 $data['peut_acheter'] = false;
             } else {
                 $data['peut_acheter'] = true;
+                $data['prixGold'] = (new HistoriqueRemisesGoldModel())->getInfosActuelGold()['prix'];
             }
             return view($allowedPages[$page], $data);
         }
