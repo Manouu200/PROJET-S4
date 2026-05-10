@@ -29,6 +29,7 @@ $routes->group('client', ['filter' => 'auth'], function ($routes) {
     $routes->get('profil', 'ClientController::edit');
     $routes->post('profil/update', 'ClientController::update');
     $routes->post('gold/payer', 'GoldController::payer');
+    $routes->post('programmes/obtenir-suggestions', 'ProgrammeController::show');
 });
 
 // Groupe Admin 
