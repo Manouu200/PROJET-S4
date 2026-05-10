@@ -89,7 +89,7 @@ function checkEmailExists(email, emailInput) {
         if (errorMsg) errorMsg.style.display = "none";
       }
     })
-    .catch((error) => {});
+    .catch((error) => { });
 }
 
 function validateNumber(numberInput, min, max) {
@@ -113,57 +113,143 @@ function getBaseUrl() {
   return document.body?.dataset?.baseUrl || window.baseUrl || "/";
 }
 
+function initRegimesSuggestions() {
+    const form = document.getElementById('regimes-form');
+    const submitBtn = document.getElementById('regimes-submit-btn');
+    const resultsSection = document.getElementById('regimes-results');
+    const panel = document.getElementById('regimes-objectif-panel');
+
+    // On sort si on n'est pas sur la bonne page
+    if (!form || !submitBtn || !panel) return;
+
+    // On stocke le contenu original du bouton (avec le SVG) pour le remettre après
+    const originalBtnContent = submitBtn.innerHTML;
+
+    const baseUrl = getBaseUrl().replace(/\/$/, "");
+    const poidsActuel = panel.dataset.poidsActuel;
+    const poidsIdealMin = panel.dataset.poidsIdealMin;
+    const poidsIdealMax = panel.dataset.poidsIdealMax;
+
+    const inputMin = document.getElementById("regimes-objectif-input-min");
+    const inputMax = document.getElementById("regimes-objectif-input-max");
+
+    submitBtn.onclick = async function(e) {
+        e.preventDefault();
+        
+        const selectedRadio = document.querySelector('input[name="objectif"]:checked');
+        if (!selectedRadio) {
+            alert("Veuillez choisir un objectif.");
+            return;
+        }
+
+        let pMin, pMax;
+        if (selectedRadio.value === "3") {
+            pMin = poidsIdealMin;
+            pMax = poidsIdealMax;
+        } else {
+            pMin = inputMin.value;
+            pMax = inputMax.value;
+        }
+
+        if (!pMin || !pMax) {
+            alert("Veuillez définir un intervalle de poids.");
+            return;
+        }
+
+        try {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = "⏳ Recherche...";
+
+            // Préparation des données POST
+            const formData = new FormData();
+            formData.append('poidsIndividu', poidsActuel);
+            formData.append('poidsMin', pMin);
+            formData.append('poidsMax', pMax);
+
+            const url = `${baseUrl}/client/programmes/obtenir-suggestions`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData,
+                // Pas besoin de 'Content-Type', FormData le gère automatiquement
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest' // Bonne pratique pour CodeIgniter
+                }
+            });
+
+            if (!response.ok) throw new Error('Erreur serveur');
+            
+            const programmes = await response.json();
+
+            // Mise à jour de la vue
+            const grid = document.querySelector('.regimes-cards-grid');
+            grid.innerHTML = '';
+
+            if (!programmes || programmes.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">Aucun programme ne correspond à ces critères.</p>';
+            } else {
+                programmes.forEach(prog => {
+                    // Adaptation des clés selon ce que renvoie ton AlgoSuggestion
+                    const card = `
+                        <div class="regime-card regime-card--blue">
+                            <div class="regime-card-top"><span class="regime-card-badge">Disponible</span></div>
+                            <h4 class="regime-card-title">${prog.nom_programme || 'Programme'}</h4>
+                            <p class="regime-card-objectif">${prog.description || 'Description non disponible'}</p>
+                            <div class="regime-card-stats">
+                                <div class="regime-stat">
+                                    <span class="regime-stat-val">${prog.total_calories || '--'}</span>
+                                    <span class="regime-stat-unit">kcal/j</span>
+                                </div>
+                            </div>
+                            <button type="button" class="regime-card-btn btn-primary" style="margin-top:14px;">Choisir ce régime</button>
+                        </div>`;
+                    grid.insertAdjacentHTML('beforeend', card);
+                });
+            }
+
+            resultsSection.scrollIntoView({ behavior: "smooth" });
+
+        } catch (error) {
+            console.error("Erreur Fetch:", error);
+            alert("Une erreur est survenue lors de la récupération des programmes.");
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnContent; // On remet le texte et le SVG
+        }
+    };
+}
 function initClientHome() {
   const mainContent = document.getElementById("main-content");
-  if (!mainContent) {
-    return;
-  }
+  if (!mainContent) return;
 
   const baseUrl = getBaseUrl().replace(/\/$/, "");
 
   function chargerPage(page) {
     fetch(page)
-      .then((response) => {
-        if (!response.ok) {
-          if (response.status === 403 || response.status === 401) {
-            throw new Error(`Erreur d'authentification (${response.status})`);
-          }
-          throw new Error(`HTTP ${response.status}`);
-        }
-        return response.text();
-      })
-      .then((data) => {
-        if (!data || data.trim().length === 0) {
-          throw new Error("Réponse vide");
-        }
+      .then(response => response.text())
+      .then(data => {
         mainContent.innerHTML = data;
+        // ON RÉ-INITIALISE TOUT APRÈS CHAQUE CHARGEMENT AJAX
         attachMenuLinks();
         attachRechargeForm();
         initImcGraph();
         initImcRing();
         initProfileWizard();
-        initProfileWizard();
         initGoldPayment();
-        initRegimesObjectives();
+        initRegimesObjectives();   // Gestion visuelle du panel
+        initRegimesSuggestions();  // Gestion du calcul et de l'envoi
       })
-      .catch((error) => {
-        mainContent.innerHTML = "";
-      });
+      .catch(error => { console.error("Erreur chargement page:", error); });
   }
 
   function attachMenuLinks() {
     document.querySelectorAll(".menu-link").forEach((link) => {
       link.onclick = function (e) {
         const href = this.getAttribute("href") || "";
-
-        if (href.includes("/logout")) {
-          window.location.href = href;
-          return;
-        }
-
+        if (href.includes("/logout")) return;
         if (!this.classList.contains("dropdown-toggle")) {
           e.preventDefault();
-          chargerPage(this.getAttribute("href"));
+          chargerPage(href);
         }
       };
     });
@@ -242,6 +328,8 @@ function initClientHome() {
       }
     });
   }
+
+  
 
   const dropdownToggle = document.querySelector(".dropdown-toggle");
   if (dropdownToggle && !dropdownToggle.dataset.bound) {
@@ -660,9 +748,9 @@ function initRegimesObjectives() {
       }
       summaryValue.textContent =
         data.target_min !== undefined &&
-        data.target_max !== undefined &&
-        data.target_min !== null &&
-        data.target_max !== null
+          data.target_max !== undefined &&
+          data.target_min !== null &&
+          data.target_max !== null
           ? formatRange(data.target_min, data.target_max)
           : "-- kg";
     } else {
@@ -671,9 +759,9 @@ function initRegimesObjectives() {
       inputMax.value = "";
       summaryValue.textContent =
         data.target_min !== undefined &&
-        data.target_max !== undefined &&
-        data.target_min !== null &&
-        data.target_max !== null
+          data.target_max !== undefined &&
+          data.target_min !== null &&
+          data.target_max !== null
           ? formatRange(data.target_min, data.target_max)
           : data.target_weight !== undefined
             ? formatKg(data.target_weight)
@@ -820,16 +908,16 @@ function initRegimesObjectives() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  console.lo;
-  const emailInputs = document.querySelectorAll('input[type="email"]');
-  const emailErrorDiv = document.getElementById("email-error");
+  console.log("Script chargé avec succès");
 
+  const emailInputs = document.querySelectorAll('input[type="email"]');
   emailInputs.forEach((input) => {
-    if (emailErrorDiv && emailErrorDiv.getAttribute("data-ajax") === "true") {
-      validateEmail(input);
-    } else {
-      validateEmailFormatOnly(input);
-    }
+      const emailErrorDiv = document.getElementById("email-error");
+      if (emailErrorDiv && emailErrorDiv.getAttribute("data-ajax") === "true") {
+          validateEmail(input);
+      } else {
+          validateEmailFormatOnly(input);
+      }
   });
 
   const tailleInput = document.getElementById("taille");

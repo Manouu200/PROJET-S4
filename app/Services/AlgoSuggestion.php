@@ -81,7 +81,6 @@ class AlgoSuggestion
             return $a['score'] <=> $b['score'];
         });
 
-        // on limite les résultats
         return array_slice($suggestions, 0, 5);
     }
     private function dansIntervalle($val, $min, $max){
