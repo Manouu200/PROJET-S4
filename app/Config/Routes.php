@@ -47,4 +47,11 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('sports/edit/(:num)', 'ActiviteSportiveController::edit/$1');
     $routes->post('sports/update/(:num)', 'ActiviteSportiveController::update/$1');
     $routes->get('sports/delete/(:num)', 'ActiviteSportiveController::delete/$1');
+
+    // codes de recharges
+    $routes->get('codes', 'CodeRechargeController::index');
+    $routes->get('codes/create', 'CodeRechargeController::create');
+    $routes->post('codes/store', 'CodeRechargeController::store');
+    $routes->get('codes/delete/(:num)', 'CodeRechargeController::delete/$1');
+    
 });

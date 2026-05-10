@@ -55,21 +55,35 @@
                         <ul class="submenu">
                             <li>
                                 <a href="<?= base_url('admin/sports') ?>" class="<?= (uri_string() == 'admin/sports') ? 'sub-active' : '' ?>">
-                                    <i class="fa-solid fa-person-running"></i> Liste activités sportives
+                                    <i class="fa-solid fa-person-running"></i> Liste activités
                                 </a>
                             </li>
                             <li>
                                 <a href="<?= base_url('admin/sports/create') ?>" class="<?= (uri_string() == 'admin/sports/create') ? 'sub-active' : '' ?>">
-                                    <i class="fa-solid fa-plus"></i> Ajouter activité sportive
+                                    <i class="fa-solid fa-plus"></i> Ajouter activité
                                 </a>
                             </li>
                         </ul>
                     </li>
 
-                    <li>
-                        <a href="<?= base_url('admin/codes') ?>" class="<?= (uri_string() == 'admin/codes') ? 'active' : '' ?>">
-                            <i class="fa-solid fa-ticket"></i> Valider Codes
+                    <li class="has-submenu <?= (strpos(uri_string(), 'admin/codes') !== false) ? 'open' : '' ?>">
+                        <a href="javascript:void(0)" class="submenu-toggle <?= (strpos(uri_string(), 'admin/codes') !== false) ? 'active' : '' ?>">
+                            <i class="fa-solid fa-ticket"></i>
+                            <span>Codes Recharges</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
                         </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="<?= base_url('admin/codes') ?>" class="<?= (uri_string() == 'admin/codes') ? 'sub-active' : '' ?>">
+                                    <i class="fa-solid fa-list-check"></i> État des codes
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?= base_url('admin/codes/create') ?>" class="<?= (uri_string() == 'admin/codes/create') ? 'sub-active' : '' ?>">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Générer codes
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <hr class="nav-separator">

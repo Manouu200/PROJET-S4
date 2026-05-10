@@ -6,6 +6,7 @@ use App\Models\Utilisateur;
 use App\Models\UtilisateurModel;
 use App\Models\RegimeModel;
 use App\Models\ActiviteSportiveModel;
+use App\Models\CodeRechargeModel;
 
 class AdminController extends BaseController
 {
@@ -14,12 +15,20 @@ class AdminController extends BaseController
         $utilisateurmodel = new UtilisateurModel();
         $activiteSportiveModel = new ActiviteSportiveModel();
         $regimeModel = new RegimeModel();
+        $codeModel = new CodeRechargeModel();
+        $codeStat = $codeModel->getCodeStats();
         $data = [
             'title' => 'Dashboard',
             'nombresClients' => $utilisateurmodel->getNombresClients(),
             'nombresRegimes' => $regimeModel->getNombresRegimes(),
             'nombresSports' => $activiteSportiveModel->getNombresSports(),
-            'nombresClientsGold'=> $utilisateurmodel->getNombresClientsGold()
+            'nombresClientsGold'=> $utilisateurmodel->getNombresClientsGold(),
+
+            'nbCodesUtilises' => $codeStat['nbCodeUtilises'],
+            'montantCodesUtilises' => $codeStat['montantCodesUtilises'],
+            
+            'nbCodesValides' => $codeStat['nbCodesValides'],
+            'montantCodesValides' => $codeStat['montantCodesValides']
         ];
         return view('admin/dashboard', $data);
     }
