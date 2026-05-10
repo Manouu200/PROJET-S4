@@ -39,3 +39,9 @@ INSERT INTO imc (min, max, libelle) VALUES
     (18.5, 25, 'Corpulence normale'),
     (25, 30, 'Surpoids'),
     (30, 999, 'Obésité');
+
+-- Objectifs par défaut
+INSERT INTO objectif (nom_objectif) VALUES
+    ('Perdre du poids'),
+    ('Prendre du poids'),
+    ('Atteindre l''IMC idéal');
