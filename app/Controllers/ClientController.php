@@ -8,9 +8,41 @@ use App\Libraries\Utils;
 use App\Models\HistoriqueRemisesGoldModel;
 use App\Models\HistoriqueSanteModel;
 use App\Models\UtilisateurModel;
+use App\Models\ObjectifModel;
 
 class ClientController extends BaseController
 {
+    public function regimes()
+{
+    $userId = session()->get('user_id');
+    $email = (string) session()->get('user_email');
+
+    $utilisateurModel = new UtilisateurModel();
+    $historiqueModel = new HistoriqueSanteModel();
+    $objectifModel = new ObjectifModel();
+
+    if (empty($userId) && $email !== '') {
+        $userId = $utilisateurModel->getIdByEmail($email);
+    }
+
+    $user = $userId ? $utilisateurModel->find($userId) : null;
+    $derniereMesure = $userId ? $historiqueModel->getDerniereMesureByUserId((int) $userId) : null;
+
+    $poids = $derniereMesure['poids'] ?? null;
+    $taille = $derniereMesure['taille'] ?? null;
+    $imc = ($poids !== null && $taille !== null) ? Utils::calculerIMC((float) $poids, (float) $taille) : null;
+
+    $data = [
+        'utilisateur' => $user ? array_merge($user, [
+            'poids' => $poids,
+            'taille' => $taille,
+            'imc' => $imc,
+        ]) : null,
+        'objectifs' => $objectifModel->orderBy('nom_objectif', 'ASC')->findAll(),
+    ];
+
+    return view('client/pages/regimes', $data);
+}
     public function index()
     {
         $data = [
@@ -24,7 +56,6 @@ class ClientController extends BaseController
     {
         $allowedPages = [
             'accueil' => 'client/pages/acceuil',
-            'regimes' => 'client/pages/regimes',
             'programme' => 'client/pages/programme',
             'solde' => 'client/pages/solde',
             'gold' => 'client/pages/gold',
@@ -72,9 +103,9 @@ class ClientController extends BaseController
             $data['solde'] = $service->getSoldeUtilisateur(session()->get('user_id'));
 
             return view($allowedPages[$page], $data);
-        } else if ($page === 'gold'){
+        } else if ($page === 'gold') {
             $goldService = new GoldService();
-            if ($goldService->isGold($userId)){
+            if ($goldService->isGold($userId)) {
                 $data['peut_acheter'] = false;
             } else {
                 $data['peut_acheter'] = true;

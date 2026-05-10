@@ -49,7 +49,7 @@
 
                 <!-- REGIMES -->
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="<?= base_url('client/page/regimes') ?>">
+                    <a class="nav-link menu-link" href="<?= base_url('client/regimes') ?>">
                         Régimes
                     </a>
                 </li>
@@ -93,6 +93,7 @@
     <div class="container-fluid main-wrapper">
         <div class="main-inner">
             <div id="main-content"></div>
+            <?= $this->renderSection('content') ?> </div>
         </div>
     </div>
 
