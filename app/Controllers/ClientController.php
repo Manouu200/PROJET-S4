@@ -23,6 +23,8 @@ class ClientController extends BaseController
             'poids_actuel' => $profil['poids_actuel'],
             'taille_actuelle' => $profil['taille_actuelle'],
             'poids_ideal' => $profil['poids_ideal'],
+            'poids_ideal_min' => $profil['poids_ideal_min'] ?? null,
+            'poids_ideal_max' => $profil['poids_ideal_max'] ?? null,
         ]);
     }
 
@@ -62,36 +64,58 @@ class ClientController extends BaseController
         $inputLabel = null;
         $description = '';
         $targetWeight = null;
+        $targetMin = null;
+        $targetMax = null;
+
+        // Accept explicit min/max if provided (user now inputs a desired interval)
+        $minRaw = trim((string) $this->request->getGet('min'));
+        $maxRaw = trim((string) $this->request->getGet('max'));
 
         if ($objectifId === 1) {
-            $inputLabel = 'Poids à perdre';
-            $description = 'Entrez la quantité de poids à perdre pour afficher votre cible.';
-            if ($valeur !== '') {
-                $perte = (float) str_replace(',', '.', $valeur);
-                if ($perte <= 0) {
+            $inputLabel = 'Plage de poids souhaitée (min — max)';
+            $description = 'Choisissez une plage de poids cible (min et max).';
+
+            if ($minRaw !== '' || $maxRaw !== '') {
+                $min = $minRaw !== '' ? (float) str_replace(',', '.', $minRaw) : null;
+                $max = $maxRaw !== '' ? (float) str_replace(',', '.', $maxRaw) : null;
+                if ($min === null || $max === null || $min < 0 || $max < 0 || $min > $max) {
                     return $this->response->setStatusCode(422)->setJSON([
                         'success' => false,
-                        'message' => 'Entrez un poids à perdre supérieur à 0.',
+                        'message' => 'Veuillez saisir une plage valide (min ≤ max).',
                     ]);
                 }
-                $targetWeight = max(0, round($poidsActuel - $perte, 1));
+                $targetMin = round($min, 1);
+                $targetMax = round($max, 1);
             }
         } elseif ($objectifId === 2) {
-            $inputLabel = 'Poids à prendre';
-            $description = 'Entrez la quantité de poids à prendre pour afficher votre cible.';
-            if ($valeur !== '') {
-                $prise = (float) str_replace(',', '.', $valeur);
-                if ($prise <= 0) {
+            $inputLabel = 'Plage de poids souhaitée (min — max)';
+            $description = 'Choisissez une plage de poids cible (min et max).';
+
+            if ($minRaw !== '' || $maxRaw !== '') {
+                $min = $minRaw !== '' ? (float) str_replace(',', '.', $minRaw) : null;
+                $max = $maxRaw !== '' ? (float) str_replace(',', '.', $maxRaw) : null;
+                if ($min === null || $max === null || $min < 0 || $max < 0 || $min > $max) {
                     return $this->response->setStatusCode(422)->setJSON([
                         'success' => false,
-                        'message' => 'Entrez un poids à prendre supérieur à 0.',
+                        'message' => 'Veuillez saisir une plage valide (min ≤ max).',
                     ]);
                 }
-                $targetWeight = round($poidsActuel + $prise, 1);
+                $targetMin = round($min, 1);
+                $targetMax = round($max, 1);
             }
         } elseif ($objectifId === 3) {
-            $description = 'Poids idéal cible calculé selon votre taille.';
-            $targetWeight = round($poidsIdeal, 1);
+            $description = 'Plage de poids idéale selon votre taille (IMC 18.5–24.9).';
+            // compute ideal interval from taille actuelle
+            $taille = $profil['taille_actuelle'];
+            if ($taille === null) {
+                return $this->response->setStatusCode(422)->setJSON([
+                    'success' => false,
+                    'message' => 'Taille inconnue, impossible de calculer la plage idéale.',
+                ]);
+            }
+            $interval = Utils::poidsIdealInterval((float) $taille);
+            $targetMin = $interval['min'];
+            $targetMax = $interval['max'];
         } else {
             return $this->response->setStatusCode(422)->setJSON([
                 'success' => false,
@@ -105,9 +129,10 @@ class ClientController extends BaseController
             'objectif_label' => $objectifLabel,
             'input_label' => $inputLabel,
             'description' => $description,
-            'current_weight' => round($poidsActuel, 1),
-            'ideal_weight' => round($poidsIdeal, 1),
-            'target_weight' => $targetWeight,
+            'current_weight' => $poidsActuel !== null ? round($poidsActuel, 1) : null,
+            'ideal_weight' => $poidsIdeal !== null ? round($poidsIdeal, 1) : null,
+            'target_min' => $targetMin,
+            'target_max' => $targetMax,
             'needs_input' => in_array($objectifId, [1, 2], true),
         ]);
     }
@@ -132,6 +157,9 @@ class ClientController extends BaseController
         $taille = $derniereMesure['taille'] ?? null;
         $imc = ($poids !== null && $taille !== null) ? Utils::calculerIMC((float) $poids, (float) $taille) : null;
 
+        $poidsIdeal = $taille !== null ? Utils::poidsIdeal((float) $taille) : null;
+        $poidsIdealInterval = $taille !== null ? Utils::poidsIdealInterval((float) $taille) : null;
+
         return [
             'utilisateur' => $user ? array_merge($user, [
                 'poids' => $poids,
@@ -140,7 +168,9 @@ class ClientController extends BaseController
             ]) : null,
             'poids_actuel' => $poids !== null ? (float) $poids : null,
             'taille_actuelle' => $taille !== null ? (float) $taille : null,
-            'poids_ideal' => $taille !== null ? Utils::poidsIdeal((float) $taille) : null,
+            'poids_ideal' => $poidsIdeal,
+            'poids_ideal_min' => $poidsIdealInterval['min'] ?? null,
+            'poids_ideal_max' => $poidsIdealInterval['max'] ?? null,
         ];
     }
 
