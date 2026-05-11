@@ -24,7 +24,7 @@ class HistoriquesRemisesGoldController extends BaseController
         $model = new HistoriqueRemisesGoldModel();
         $data = [
             'pourcent_remise' => $this->request->getPost('pourcent_remise'),
-            'created_at'      => date('Y-m-d H:i:s')
+            'prix'            => (new HistoriqueRemisesGoldModel())->getInfosActuelGold()['prix']
         ];
 
         if ($model->insert($data)) {
