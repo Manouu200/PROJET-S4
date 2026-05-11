@@ -17,7 +17,7 @@
                 <img src="<?= base_url('assets/NutriPlan.png') ?>" alt="Logo NutriPlan" class="brand-logo">
                 <span style="text-transform: none; font-weight: 700; color: #2d3436;">Admin</span>
             </div>
-            
+
             <nav>
                 <ul>
                     <li>
@@ -101,6 +101,25 @@
                             <li>
                                 <a href="<?= base_url('admin/imc/create') ?>" class="<?= (uri_string() == 'admin/imc/create') ? 'sub-active' : '' ?>">
                                     <i class="fa-solid fa-plus-circle"></i> Ajouter une tranche
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="has-submenu <?= (strpos(uri_string(), 'admin/remises') !== false) ? 'open' : '' ?>">
+                        <a href="javascript:void(0)" class="submenu-toggle <?= (strpos(uri_string(), 'admin/remises') !== false) ? 'active' : '' ?>">
+                            <i class="fa-solid fa-crown"></i>
+                            <span>Offre Gold</span>
+                            <i class="fa-solid fa-chevron-down arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="<?= base_url('admin/remises') ?>" class="<?= (uri_string() == 'admin/remises') ? 'sub-active' : '' ?>">
+                                    <i class="fa-solid fa-history"></i> Historique
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?= base_url('admin/remises/create') ?>" class="<?= (uri_string() == 'admin/remises/create') ? 'sub-active' : '' ?>">
+                                    <i class="fa-solid fa-percentage"></i> Ajuster remise
                                 </a>
                             </li>
                         </ul>
