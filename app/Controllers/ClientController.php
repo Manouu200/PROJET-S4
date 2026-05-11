@@ -9,6 +9,7 @@ use App\Models\HistoriqueRemisesGoldModel;
 use App\Models\HistoriqueSanteModel;
 use App\Models\UtilisateurModel;
 use App\Models\ObjectifModel;
+use App\Models\ProgrammeUtilisateurModel;
 
 class ClientController extends BaseController
 {
@@ -229,6 +230,18 @@ class ClientController extends BaseController
             }
 
             return view($allowedPages[$page], ['imc' => $imc]);
+        } else if ($page === 'programme') {
+            $email = (string) session()->get('user_email');
+            if (empty($userId) && $email !== '') {
+                $userId = (new UtilisateurModel())->getIdByEmail($email);
+            }
+
+            $userId = $userId ? (int) $userId : null;
+            $programmes = $userId ? (new ProgrammeUtilisateurModel())->getProgrammesUtilisateur($userId) : [];
+
+            return view($allowedPages[$page], [
+                'programmes' => $programmes,
+            ]);
         } else if ($page === 'solde') {
             $service = new SoldeService();
             $data['solde'] = $service->getSoldeUtilisateur(session()->get('user_id'));

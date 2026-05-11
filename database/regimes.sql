@@ -35,3 +35,16 @@ INSERT INTO regime_prix (id_regime, duree_jours, prix) VALUES
 (5, 30, 49.99),
 (5, 45, 69.99),
 (5, 90, 119.99);    
+
+-- Activites sportives (variation de poids par semaine en kg)
+INSERT INTO activite_sportive (nom, poids_variation) VALUES
+('Marche rapide (150-180 min/semaine)', -0.30),
+('Course a pied (90-120 min/semaine)', -0.60),
+('Natation (2-3 seances/semaine)', -0.40),
+('Cyclisme (2-3 sorties/semaine)', -0.45),
+('HIIT (3 seances/semaine)', -0.70),
+('Yoga dynamique (3 seances/semaine)', -0.20),
+('Musculation prise de masse (3-4 seances/semaine)', 0.40),
+('Musculation maintien (2-3 seances/semaine)', 0.10),
+('Cross-training (3 seances/semaine)', -0.50),
+('Repos actif (mobilite + marche)', -0.10);

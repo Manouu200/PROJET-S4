@@ -126,6 +126,26 @@ function initRegimesSuggestions() {
   const originalBtnContent = submitBtn.innerHTML;
   const baseUrl = getBaseUrl().replace(/\/$/, "");
 
+  if (!grid.dataset.bound) {
+    grid.dataset.bound = "true";
+    grid.addEventListener("click", function (event) {
+      const btn = event.target.closest(".choisir-programme-btn");
+      if (!btn) return;
+
+      const idx = Number.parseInt(btn.dataset.idx || "-1", 10);
+      const programmes = window.__regimesProgrammes || [];
+      if (!Number.isFinite(idx) || !programmes[idx]) {
+        return;
+      }
+
+      sessionStorage.setItem(
+        "programmeChoisi",
+        JSON.stringify(programmes[idx]),
+      );
+      window.location.href = baseUrl + "/client/programmes/payer";
+    });
+  }
+
   const poidsActuel = panel.dataset.poidsActuel;
   const poidsIdealMin = panel.dataset.poidsIdealMin;
   const poidsIdealMax = panel.dataset.poidsIdealMax;
@@ -171,6 +191,7 @@ function initRegimesSuggestions() {
       );
 
       const programmes = await response.json();
+      window.__regimesProgrammes = programmes || [];
       resultsSection.hidden = false;
       grid.innerHTML = "";
 
@@ -178,7 +199,7 @@ function initRegimesSuggestions() {
         grid.innerHTML =
           '<p class="regimes-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 40px;">Aucun programme trouvé.</p>';
       } else {
-        programmes.forEach((prog) => {
+        programmes.forEach((prog, idx) => {
           const badge = prog.type === "sport" ? "Avec sport" : "Sans sport";
           const sportLabel = prog.sport
             ? `<span class="badge-pill badge-pill--orange">${prog.sport}</span>`
@@ -206,7 +227,7 @@ function initRegimesSuggestions() {
                       <span class="badge-pill badge-pill--blue">${badge}</span>
                       ${sportLabel}
                             </div>
-                            <button type="button" class="regime-card-btn btn-primary" style="margin-top:14px;">
+                            <button type="button" class="regime-card-btn btn-primary choisir-programme-btn" data-idx="${idx}" style="margin-top:14px;">
                                 Choisir ce programme
                             </button>
                         </div>`;
