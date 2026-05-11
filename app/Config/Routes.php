@@ -67,4 +67,10 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('imc/edit/(:num)', 'IMCController::edit/$1'); // Formulaire Edit
     $routes->post('imc/update/(:num)', 'IMCController::update/$1'); // Action Edit
     $routes->get('imc/delete/(:num)', 'IMCController::delete/$1');
+
+    // Remises Gold
+    $routes->get('remises', 'HistoriquesRemisesGoldController::index');
+    $routes->get('remises/create', 'HistoriquesRemisesGoldController::create');
+    $routes->post('remises/store', 'HistoriquesRemisesGoldController::store');
+    $routes->get('remises/delete/(:num)', 'HistoriquesRemisesGoldController::delete/$1');
 });
