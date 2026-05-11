@@ -138,12 +138,137 @@ function initRegimesSuggestions() {
         return;
       }
 
-      sessionStorage.setItem(
-        "programmeChoisi",
-        JSON.stringify(programmes[idx]),
-      );
-      window.location.href = baseUrl + "/client/programmes/payer";
+      // Afficher la modal de confirmation au lieu de naviguer directement
+      openProgrammeConfirmModal(programmes[idx]);
     });
+  }
+
+  // Fonction pour ouvrir la modal de confirmation
+  function openProgrammeConfirmModal(programme) {
+    const modal = document.getElementById("programme-modal");
+    const detailsDiv = document.getElementById("programme-modal-details");
+    const errorDiv = document.getElementById("programme-modal-error");
+    const messageDiv = document.getElementById("programme-modal-text");
+    const confirmBtn = document.getElementById("programme-confirm-btn");
+    const cancelBtn = document.getElementById("programme-cancel-btn");
+
+    if (!modal || !detailsDiv || !confirmBtn || !cancelBtn) return;
+
+    modal.dataset.paymentState = "pending";
+
+    // Réinitialiser le message d'erreur
+    errorDiv.style.display = "none";
+    errorDiv.textContent = "";
+    if (messageDiv) {
+      messageDiv.style.display = "block";
+    }
+    confirmBtn.disabled = false;
+    confirmBtn.style.display = "";
+    confirmBtn.textContent = "Confirmer";
+    cancelBtn.textContent = "Annuler";
+
+    // Remplir les détails du programme
+    detailsDiv.innerHTML = `
+      <div style="margin-bottom:12px;">
+        <span style="display:block; color:var(--text-secondary); font-size:0.85em; margin-bottom:4px;">Programme</span>
+        <strong style="font-size:1.1em; color:var(--text);">${programme.regime}</strong>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
+        <div>
+          <span style="display:block; color:var(--text-secondary); font-size:0.85em; margin-bottom:4px;">Objectif final</span>
+          <strong style="color:var(--text);">${Number(programme.poids_final).toFixed(1)} kg</strong>
+        </div>
+        <div>
+          <span style="display:block; color:var(--text-secondary); font-size:0.85em; margin-bottom:4px;">Durée</span>
+          <strong style="color:var(--text);">${programme.duree} jours</strong>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
+        <div>
+          <span style="display:block; color:var(--text-secondary); font-size:0.85em; margin-bottom:4px;">Prix</span>
+          <strong style="font-size:1.15em; color:var(--green-dark);">${Number(programme.prix).toFixed(2)} €</strong>
+        </div>
+        <div>
+          <span style="display:block; color:var(--text-secondary); font-size:0.85em; margin-bottom:4px;">Type</span>
+          <strong style="color:var(--text);">${programme.type === "sport" ? "Avec sport" : "Sans sport"}</strong>
+        </div>
+      </div>
+      ${programme.sport ? `<div style="margin-top:12px; padding:8px; background:var(--orange); color:white; border-radius:6px; text-align:center; font-size:0.9em; font-weight:600;"><span>${programme.sport}</span></div>` : ""}
+    `;
+
+    // Gérer la confirmation et le paiement
+    confirmBtn.onclick = async function () {
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = "⏳ Traitement...";
+      errorDiv.style.display = "none";
+      errorDiv.textContent = "";
+
+      try {
+        const response = await fetch(
+          baseUrl + "/client/programmes/valider-paiement",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+            },
+            body: JSON.stringify(programme),
+          },
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          // Erreur : afficher le message en rouge
+          errorDiv.textContent = data.message || "Erreur lors du paiement";
+          errorDiv.style.display = "block";
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = "Confirmer";
+          return;
+        }
+
+        // Succès : afficher message de succès et rester sur la page
+        detailsDiv.innerHTML = `
+          <div style="text-align:center; padding:20px;">
+            <div style="font-size:3em; margin-bottom:12px;">✓</div>
+            <strong style="color:var(--green-dark); font-size:1.1em;">Paiement validé avec succès !</strong>
+            <p style="color:var(--text-secondary); margin-top:12px;">Votre programme est maintenant actif.</p>
+          </div>
+        `;
+        errorDiv.style.display = "none";
+        confirmBtn.style.display = "none";
+        if (messageDiv) {
+          messageDiv.style.display = "none";
+        }
+        cancelBtn.textContent = "Terminer";
+        modal.dataset.paymentState = "success";
+      } catch (err) {
+        errorDiv.textContent = "Erreur réseau. Veuillez réessayer.";
+        errorDiv.style.display = "block";
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = "Confirmer";
+      }
+    };
+
+    // Gérer l'annulation
+    cancelBtn.onclick = function () {
+      if (modal.dataset.paymentState === "success") {
+        window.location.href = baseUrl + "/client/home";
+        return;
+      }
+
+      modal.style.display = "none";
+    };
+
+    // Fermer la modal si on clique en dehors
+    modal.onclick = function (e) {
+      if (e.target === modal) {
+        modal.style.display = "none";
+      }
+    };
+
+    // Afficher la modal
+    modal.style.display = "flex";
   }
 
   const poidsActuel = panel.dataset.poidsActuel;

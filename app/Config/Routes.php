@@ -32,6 +32,7 @@ $routes->group('client', ['filter' => 'auth'], function ($routes) {
     $routes->post('programmes/obtenir-suggestions', 'ProgrammeController::show');
     $routes->get('programmes/payer', 'ProgrammeController::payer');
     $routes->post('programmes/valider-paiement', 'ProgrammeController::validerPaiement');
+    $routes->get('programmes/export-pdf/(:num)', 'ProgrammeController::exportPdf/$1');
 });
 
 // Groupe Admin 

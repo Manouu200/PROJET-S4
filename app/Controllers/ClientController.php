@@ -239,8 +239,64 @@ class ClientController extends BaseController
             $userId = $userId ? (int) $userId : null;
             $programmes = $userId ? (new ProgrammeUtilisateurModel())->getProgrammesUtilisateur($userId) : [];
 
+            // provide current weight to view so we can calculate poids final if needed
+            $profil = $this->getRegimeProfil();
+            $poidsActuel = $profil['poids_actuel'] ?? null;
+
+            // Find the last bought programme by matching regime, poids_final, and sport
+            $lastProgrammeId = null;
+            $lastProgrammeBought = session()->get('last_programme_bought');
+            if (!empty($lastProgrammeBought)) {
+                foreach ($programmes as $idx => $prog) {
+                    $regimeMatches = $prog['regime_nom'] === $lastProgrammeBought['regime'];
+
+                    // Calculate poids_final for this programme to compare with session
+                    $progPoidsFinal = null;
+                    if (isset($prog['poids_final'])) {
+                        $progPoidsFinal = (float)$prog['poids_final'];
+                    } elseif (isset($prog['poids_variation']) && isset($poidsActuel) && $poidsActuel !== null) {
+                        $progPoidsFinal = (float)$poidsActuel + (float)$prog['poids_variation'];
+                    }
+
+                    // Match poids_final within 0.5 kg tolerance (rounding differences)
+                    $poidsFinalMatches = false;
+                    if (isset($lastProgrammeBought['poids_final']) && $progPoidsFinal !== null) {
+                        $poidsDiff = abs($progPoidsFinal - (float)$lastProgrammeBought['poids_final']);
+                        $poidsFinalMatches = $poidsDiff <= 0.5;
+                    }
+
+                    // Match sport (prefer activite_nom, fallback to session sport)
+                    $activiteMatches = false;
+                    if (!empty($lastProgrammeBought['sport'])) {
+                        $progSport = $prog['activite_nom'] ?? '';
+                        $lastSport = $lastProgrammeBought['sport'];
+                        $activiteMatches = (mb_stripos($progSport, $lastSport) !== false) ||
+                            (mb_stripos($lastSport, $progSport) !== false) ||
+                            ($progSport === $lastSport);
+                    } elseif (empty($prog['activite_nom'])) {
+                        // Both have no sport
+                        $activiteMatches = true;
+                    }
+
+                    if ($regimeMatches && $poidsFinalMatches && $activiteMatches) {
+                        $lastProgrammeId = $idx;
+                        break;
+                    }
+                }
+
+                if ($lastProgrammeId !== null && isset($programmes[$lastProgrammeId])) {
+                    $lastProgramme = $programmes[$lastProgrammeId];
+                    array_splice($programmes, $lastProgrammeId, 1);
+                    array_unshift($programmes, $lastProgramme);
+                    $lastProgrammeId = 0;
+                }
+            }
+
             return view($allowedPages[$page], [
                 'programmes' => $programmes,
+                'poids_actuel' => $poidsActuel,
+                'lastProgrammeId' => $lastProgrammeId,
+                'lastProgrammeBought' => $lastProgrammeBought,
             ]);
         } else if ($page === 'solde') {
             $service = new SoldeService();

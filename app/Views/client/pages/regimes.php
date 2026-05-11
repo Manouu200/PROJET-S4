@@ -262,3 +262,37 @@
         </div>
     </div>
 </section>
+
+<!-- Modal de confirmation du choix de programme -->
+<div id="programme-modal" style="display:none; position:fixed; inset:0; background:rgba(12, 18, 33, 0.62); backdrop-filter:blur(8px); justify-content:center; align-items:center; padding:20px; z-index:1050;">
+    <div class="imc-card" style="max-width:500px; width:100%; margin:0; text-align:center; box-shadow:0 24px 60px rgba(15, 23, 42, 0.24);">
+        <div class="imc-header" style="align-items:center;">
+            <div style="width:100%;">
+                <span class="imc-badge">Confirmation</span>
+                <h2 style="margin-bottom:0;">Valider votre choix</h2>
+            </div>
+        </div>
+
+        <div id="programme-modal-error" style="display:none; margin:16px 0; padding:12px; background:#fee; border:1px solid #fcc; border-radius:6px; color:#c33; font-size:0.9em; text-align:left;">
+            <!-- Message d'erreur sera inséré ici -->
+        </div>
+
+        <div id="programme-modal-details" style="margin:20px 0; text-align:left; padding:20px; background:rgba(74, 144, 226, 0.06); border-radius:8px;">
+            <!-- Détails du programme seront insérés ici par JS -->
+        </div>
+
+        <p id="programme-modal-text" style="margin:18px 0 24px; font-size:0.95rem; line-height:1.6; color:var(--text-secondary);">
+            Cliquez sur <strong>Confirmer</strong> pour valider votre choix et procéder au paiement.
+        </p>
+
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+            <button id="programme-confirm-btn" type="button" class="btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px;">
+                    <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Confirmer
+            </button>
+            <button id="programme-cancel-btn" type="button" class="btn-secondary">Annuler</button>
+        </div>
+    </div>
+</div>
