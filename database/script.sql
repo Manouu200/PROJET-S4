@@ -2,6 +2,7 @@ DROP DATABASE IF EXISTS regime;
 CREATE DATABASE IF NOT EXISTS regime;
 USE regime;
 
+-- 1. UTILISATEURS (base pour beaucoup de FK)
 CREATE TABLE utilisateurs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
@@ -14,20 +15,53 @@ CREATE TABLE utilisateurs (
     role ENUM('CLIENT', 'ADMIN') DEFAULT 'CLIENT'
 );
 
+-- 2. TABLES INDÉPENDANTES
+CREATE TABLE objectif (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom_objectif VARCHAR(100)
+);
+
+CREATE TABLE regime (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100),
+    pourcent_viande INT,
+    pourcent_poisson INT,
+    pourcent_volaille INT,
+    poids_variation DECIMAL(5,2),
+    duree_jours INT
+);
+
+CREATE TABLE activite_sportive (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100),
+    poids_variation DECIMAL(5,2)
+);
+
+CREATE TABLE imc (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    min DECIMAL(5,2),
+    max DECIMAL(5,2),
+    libelle VARCHAR(100)
+);
+
+-- 3. TABLES DÉPENDANT D'AUTRES (mais sans FK complexes encore)
+CREATE TABLE historique_remises_gold (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    prix DECIMAL(10,2) NOT NULL,
+    pourcent_remise DECIMAL(5,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4. TABLES LIÉES À UTILISATEURS / BASE
 CREATE TABLE historique_sante (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_utilisateur INT NOT NULL,
-    poids DECIMAL(5,2),      -- ex: 70.50 kg
-    taille DECIMAL(5,2),     -- ex: 1.75 m
+    poids DECIMAL(5,2),
+    taille DECIMAL(5,2),
     date_mesure DATE,
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
-);
-
-CREATE TABLE objectif (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom_objectif VARCHAR(100)
 );
 
 CREATE TABLE objectifs_utilisateur (
@@ -39,16 +73,6 @@ CREATE TABLE objectifs_utilisateur (
     FOREIGN KEY (id_objectif) REFERENCES objectif(id)
 );
 
-CREATE TABLE regime (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(100),
-    pourcent_viande INT,
-    pourcent_poisson INT,
-    pourcent_volaille INT,
-    poids_variation DECIMAL(5,2), -- + ou -
-    duree_jours INT
-);
-
 CREATE TABLE regime_prix (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_regime INT,
@@ -57,20 +81,7 @@ CREATE TABLE regime_prix (
     FOREIGN KEY (id_regime) REFERENCES regime(id)
 );
 
-CREATE TABLE activite_sportive (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(100),
-    poids_variation DECIMAL(5,2) -- + ou -
-);
-
-CREATE TABLE imc (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    min DECIMAL(5,2),
-    max DECIMAL(5,2),
-    libelle VARCHAR(100)
-);
-
--- PS: on ajoutera des lignes a cette table que si le paiement pour le programme est approuve
+-- 5. PROGRAMMES (dépend de plusieurs tables)
 CREATE TABLE programme_utilisateur (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_utilisateur INT,
@@ -82,6 +93,7 @@ CREATE TABLE programme_utilisateur (
     FOREIGN KEY (id_activite) REFERENCES activite_sportive(id)
 );
 
+-- 6. PORTEFEUILLE + RECHARGE
 CREATE TABLE portefeuille (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_utilisateur INT NOT NULL UNIQUE,
@@ -112,12 +124,22 @@ CREATE TABLE historique_recharge (
     id_code_utilise INT NOT NULL UNIQUE,
     montant DECIMAL(12,2) NOT NULL,
     used_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
     FOREIGN KEY (id_portefeuille) REFERENCES portefeuille(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-
     FOREIGN KEY (id_code_utilise) REFERENCES code_recharge(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
+);
+
+-- 7. TABLE FINALE (dépendances complètes)
+CREATE TABLE paiements_gold_effectues (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT NOT NULL,
+    id_historique_remises_gold INT NOT NULL,
+    date_paiement TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_historique_remises_gold)
+        REFERENCES historique_remises_gold(id),
+    FOREIGN KEY (id_utilisateur)
+        REFERENCES utilisateurs(id)
 );

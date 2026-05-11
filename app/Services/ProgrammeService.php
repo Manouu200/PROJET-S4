@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\PortefeuilleModel;
 use App\Models\ProgrammeUtilisateurModel;
 use App\Models\RegimeModel;
+use App\Models\ActiviteSportiveModel;
 use Exception;
 
 class ProgrammeService
@@ -48,18 +49,52 @@ class ProgrammeService
                 'id_activite' => $programmeData['id_activite'] ?? null,
                 'date_decision' => date('Y-m-d'),
             ];
+
+            // If id_activite not provided but a sport name exists, try to resolve it
+            if (empty($dataInsert['id_activite']) && !empty($programmeData['sport'])) {
+                $sportName = trim((string) $programmeData['sport']);
+                $activiteModel = new ActiviteSportiveModel();
+
+                // 1) Try exact match first (case-sensitive)
+                $activite = $activiteModel->where('nom', $sportName)->first();
+
+                // 2) Try case-insensitive exact match
+                if (!$activite) {
+                    $rows = $activiteModel->findAll();
+                    $lowerName = mb_strtolower($sportName);
+                    foreach ($rows as $r) {
+                        if (mb_strtolower(trim($r['nom'])) === $lowerName) {
+                            $activite = $r;
+                            break;
+                        }
+                    }
+                }
+
+                // 3) Try partial match (contains)
+                if (!$activite) {
+                    foreach ($rows as $r) {
+                        if (mb_stripos($r['nom'], $sportName) !== false || mb_stripos($sportName, $r['nom']) !== false) {
+                            $activite = $r;
+                            break;
+                        }
+                    }
+                }
+
+                if ($activite) {
+                    $dataInsert['id_activite'] = $activite['id'];
+                }
+            }
             if ($programmeUtilisateurModel->insert($dataInsert) === false) {
                 throw new Exception("Insertion programme invalide");
             }
 
             // 4. Deduir le solde
             $portefeuille = $portefeuilleModel->getPortefeuille($userId);
-            if ($portefeuille){
+            if ($portefeuille) {
                 // 1. débiter portefeuille
                 $portefeuilleModel->update($portefeuille['id'], [
                     'solde' => $portefeuille['solde'] - $prix
                 ]);
-   
             }
 
             $portefeuilleMaj = $portefeuilleModel->where('id_utilisateur', $userId)->first();
