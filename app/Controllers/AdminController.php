@@ -7,6 +7,7 @@ use App\Models\UtilisateurModel;
 use App\Models\RegimeModel;
 use App\Models\ActiviteSportiveModel;
 use App\Models\CodeRechargeModel;
+use App\Models\HistoriqueRemisesGoldModel;
 
 class AdminController extends BaseController
 {
@@ -17,6 +18,7 @@ class AdminController extends BaseController
         $regimeModel = new RegimeModel();
         $codeModel = new CodeRechargeModel();
         $codeStat = $codeModel->getCodeStats();
+        $remisesModel = new HistoriqueRemisesGoldModel();
         $data = [
             'title' => 'Dashboard',
             'nombresClients' => $utilisateurmodel->getNombresClients(),
@@ -28,7 +30,8 @@ class AdminController extends BaseController
             'montantCodesUtilises' => $codeStat['montantCodesUtilises'],
             
             'nbCodesValides' => $codeStat['nbCodesValides'],
-            'montantCodesValides' => $codeStat['montantCodesValides']
+            'montantCodesValides' => $codeStat['montantCodesValides'],
+            'remises' => $remisesModel->getInfosActuelGold()
         ];
         return view('admin/dashboard', $data);
     }
@@ -38,8 +41,5 @@ class AdminController extends BaseController
         return view('admin/gestion-regimes');
     }
 
-    // public function mdp_admin(){
-    //     $mdp = password_hash('admin1234', PASSWORD_DEFAULT);
-    //     echo $mdp;
-    // }
+
 }
