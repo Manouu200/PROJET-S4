@@ -167,40 +167,54 @@ function initRegimesSuggestions() {
             const grid = document.querySelector('.regimes-cards-grid');
             grid.innerHTML = '';
 
+
             if (!programmes || programmes.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px;">Aucun programme trouvé.</p>';
+              grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px;">Aucun programme trouvé.</p>';
             } else {
-                programmes.forEach(prog => {
-                    // Construction de la carte avec les bonnes clés du JSON
-                    const card = `
-                        <div class="regime-card regime-card--blue">
-                            <div class="regime-card-top">
-                                <span class="regime-card-badge">Score: ${prog.score.toFixed(1)}</span>
-                            </div>
-                            <h4 class="regime-card-title">${prog.regime}</h4>
-                            <p class="regime-card-objectif">
-                                🎯 Objectif final : <strong>${prog.poids_final} kg</strong>
-                            </p>
-                            <div class="regime-card-stats">
-                                <div class="regime-stat">
-                                    <span class="regime-stat-val">${prog.duree}</span>
-                                    <span class="regime-stat-unit">jours</span>
-                                </div>
-                                <div class="regime-stat">
-                                    <span class="regime-stat-val">${prog.prix.toFixed(2)}</span>
-                                    <span class="regime-stat-unit">€</span>
-                                </div>
-                            </div>
-                            <div class="regime-card-tags">
-                                <span class="badge-pill badge-pill--blue">${prog.type}</span>
-                                ${prog.sport ? `<span class="badge-pill badge-pill--orange">Sport inclus</span>` : ''}
-                            </div>
-                            <button type="button" class="regime-card-btn btn-primary" style="margin-top:14px;">
-                                Choisir ce programme
-                            </button>
-                        </div>`;
-                    grid.insertAdjacentHTML('beforeend', card);
+              programmes.forEach((prog, idx) => {
+                // Construction de la carte avec les bonnes clés du JSON
+                const card = `
+                  <div class="regime-card regime-card--blue">
+                    <div class="regime-card-top">
+                      <span class="regime-card-badge">Score: ${prog.score.toFixed(1)}</span>
+                    </div>
+                    <h4 class="regime-card-title">${prog.regime}</h4>
+                    <p class="regime-card-objectif">
+                      🎯 Objectif final : <strong>${prog.poids_final} kg</strong>
+                    </p>
+                    <div class="regime-card-stats">
+                      <div class="regime-stat">
+                        <span class="regime-stat-val">${prog.duree}</span>
+                        <span class="regime-stat-unit">jours</span>
+                      </div>
+                      <div class="regime-stat">
+                        <span class="regime-stat-val">${prog.prix.toFixed(2)}</span>
+                        <span class="regime-stat-unit">€</span>
+                      </div>
+                    </div>
+                    <div class="regime-card-tags">
+                      <span class="badge-pill badge-pill--blue">${prog.type}</span>
+                      ${prog.sport ? `<span class="badge-pill badge-pill--orange">Sport inclus</span>` : ''}
+                    </div>
+                    <button type="button" class="regime-card-btn btn-primary choisir-programme-btn" data-idx="${idx}" style="margin-top:14px;">
+                      Choisir ce programme
+                    </button>
+                  </div>`;
+                grid.insertAdjacentHTML('beforeend', card);
+              });
+
+              // Ajout du gestionnaire sur tous les boutons "Choisir ce programme"
+              const btns = grid.querySelectorAll('.choisir-programme-btn');
+              btns.forEach((btn) => {
+                btn.addEventListener('click', function () {
+                  const idx = parseInt(this.getAttribute('data-idx'), 10);
+                  const programme = programmes[idx];
+                  // Stocker les infos du programme dans sessionStorage
+                  sessionStorage.setItem('programmeChoisi', JSON.stringify(programme));
+                  // Rediriger vers la page de paiement (à créer côté serveur)
+                  window.location.href = getBaseUrl().replace(/\/$/, "") + '/client/programmes/payer';
                 });
+              });
             }
 
             resultsSection.scrollIntoView({ behavior: "smooth" });

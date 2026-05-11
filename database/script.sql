@@ -81,6 +81,7 @@ CREATE TABLE programme_utilisateur (
     FOREIGN KEY (id_regime) REFERENCES regime(id),
     FOREIGN KEY (id_activite) REFERENCES activite_sportive(id)
 );
+ 
 
 CREATE TABLE portefeuille (
     id INT AUTO_INCREMENT PRIMARY KEY,
